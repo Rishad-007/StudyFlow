@@ -9,6 +9,8 @@ import { SettingToggle } from '@/components/settings/SettingToggle'
 import { NotificationPrompt } from '@/components/shared/NotificationPrompt'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { usePWAInstall } from '@/hooks/usePWAInstall'
+import { MonitorSmartphone } from 'lucide-react'
 
 export default function SettingsPage() {
   const { user } = useAuth()
@@ -28,6 +30,7 @@ export default function SettingsPage() {
   const [browserNotifs, setBrowserNotifs] = useState(true)
   const [deleteConfirm, setDeleteConfirm] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const pwa = usePWAInstall()
 
   useEffect(() => {
     fetchSettings()
@@ -233,6 +236,55 @@ export default function SettingsPage() {
               <div className="text-xs text-gray-500">Follow your system preference</div>
             </div>
           </label>
+        </div>
+      </SettingCard>
+
+      {/* Install App */}
+      <SettingCard title="App" description="Install StudyFlow on your device">
+        <div className="flex items-center gap-3">
+          <MonitorSmartphone className="h-8 w-8 shrink-0 text-indigo-500" />
+          <div className="flex-1">
+            {pwa.isInstalled ? (
+              <p className="text-sm font-medium text-emerald-600">App is installed</p>
+            ) : pwa.canInstall && !pwa.dismissed ? (
+              <>
+                <p className="text-sm font-medium text-gray-800">Install StudyFlow</p>
+                <p className="text-xs text-gray-500">Use it offline, track anywhere.</p>
+                <div className="mt-2 flex gap-2">
+                  <button
+                    onClick={pwa.install}
+                    className="rounded-lg bg-indigo-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-600"
+                  >
+                    Install
+                  </button>
+                  <button
+                    onClick={pwa.dismiss}
+                    className="text-sm text-gray-500 hover:text-gray-700"
+                  >
+                    Not now
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-sm font-medium text-gray-800">Install StudyFlow</p>
+                <p className="text-xs text-gray-500">
+                  {/iphone|ipad|ipod/i.test(navigator.userAgent) && !pwa.isInstalled
+                    ? 'Tap the Share button in Safari, then "Add to Home Screen".'
+                    : 'Open in Chrome or Edge and look for "Install" in the menu.'}
+                </p>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('studyflow-pwa-dismissed')
+                    window.location.reload()
+                  }}
+                  className="mt-2 text-xs text-indigo-500 hover:underline"
+                >
+                  Show install prompt again
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </SettingCard>
 

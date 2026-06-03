@@ -9,7 +9,6 @@ interface SubjectCardProps {
   chapters: Chapter[]
   onEdit: (subject: Subject) => void
   onDelete: (subject: Subject) => void
-  onAddChapter: (subject: Subject) => void
   onEditChapter: (chapter: Chapter) => void
   onDeleteChapter: (chapter: Chapter) => void
   onUpdateProgress: (chapter: Chapter) => void
@@ -20,7 +19,6 @@ export function SubjectCard({
   chapters,
   onEdit,
   onDelete,
-  onAddChapter,
   onEditChapter,
   onDeleteChapter,
   onUpdateProgress,
@@ -54,24 +52,24 @@ export function SubjectCard({
               <ProgressBar value={avgProgress} color={subject.color} size="sm" showLabel />
             </div>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <button
               onClick={(e) => {
                 e.stopPropagation()
                 onEdit(subject)
               }}
-              className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+              className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
             >
-              <Pencil className="h-4 w-4" />
+              <Pencil className="h-5 w-5" />
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation()
                 onDelete(subject)
               }}
-              className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
+              className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-5 w-5" />
             </button>
             {expanded ? (
               <ChevronDown className="h-5 w-5 text-gray-400" />
@@ -100,12 +98,6 @@ export function SubjectCard({
               ))}
             </div>
           )}
-          <button
-            onClick={() => onAddChapter(subject)}
-            className="mt-3 text-sm font-medium text-indigo-600 hover:text-indigo-700"
-          >
-            + Add chapter
-          </button>
         </div>
       )}
     </div>

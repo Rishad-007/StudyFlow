@@ -47,27 +47,23 @@ export default function DashboardPage() {
     [subjects],
   )
 
-  // Last 3 unique subject+chapter combos for quick start
+  // Last 3 unique subjects for quick start
   const recentQuickStart = useMemo(() => {
     const seen = new Set<string>()
-    const items: { subjectId: string; chapterId: string | null; subjectName: string; chapterName: string | null }[] = []
+    const items: { subjectId: string; subjectName: string }[] = []
     for (const session of recentSessions) {
       if (!session.subject_id) continue
-      const key = `${session.subject_id}-${session.chapter_id ?? ''}`
-      if (seen.has(key)) continue
-      seen.add(key)
+      if (seen.has(session.subject_id)) continue
+      seen.add(session.subject_id)
       const sub = subjects.find((s) => s.id === session.subject_id)
-      const ch = session.chapter_id ? chapters.find((c) => c.id === session.chapter_id) : null
       items.push({
         subjectId: session.subject_id,
-        chapterId: session.chapter_id,
         subjectName: sub?.name ?? 'Unknown',
-        chapterName: ch?.name ?? null,
       })
       if (items.length >= 3) break
     }
     return items
-  }, [recentSessions, subjects, chapters])
+  }, [recentSessions, subjects])
 
   const displayName = user?.user_metadata?.full_name ?? user?.email?.split('@')[0] ?? 'there'
 

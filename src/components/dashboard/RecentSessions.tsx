@@ -46,7 +46,7 @@ export function RecentSessions({ sessions, subjectNames }: RecentSessionsProps) 
             <button
               key={session.id}
               onClick={() => navigate('/analytics')}
-              className="flex w-full items-center gap-3 rounded-lg px-2 py-2 hover:bg-gray-50"
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-3 hover:bg-gray-50"
             >
               <Icon className="h-4 w-4 text-indigo-400" />
               <span className="flex-1 text-left text-sm text-gray-700">

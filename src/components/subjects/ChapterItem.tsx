@@ -33,25 +33,25 @@ export function ChapterItem({
           <p className="mt-1 text-xs italic text-gray-400">{chapter.checkpoint_text}</p>
         )}
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <button
           onClick={onUpdateProgress}
-          className="rounded-lg p-1.5 text-indigo-400 hover:bg-indigo-50 hover:text-indigo-600"
+          className="rounded-lg p-2 text-indigo-400 hover:bg-indigo-50 hover:text-indigo-600"
           title="Update progress"
         >
-          <RefreshCw className="h-3.5 w-3.5" />
+          <RefreshCw className="h-5 w-5" />
         </button>
         <button
           onClick={onEdit}
-          className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+          className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
         >
-          <Pencil className="h-3.5 w-3.5" />
+          <Pencil className="h-5 w-5" />
         </button>
         <button
           onClick={onDelete}
-          className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
+          className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500"
         >
-          <Trash2 className="h-3.5 w-3.5" />
+          <Trash2 className="h-5 w-5" />
         </button>
       </div>
     </div>

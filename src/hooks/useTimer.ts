@@ -30,4 +30,15 @@ export function useTimer() {
       }
     }
   }, [status, tick])
+
+  // Recalculate elapsed time when tab becomes visible
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        tick()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    return () => document.removeEventListener('visibilitychange', handleVisibility)
+  }, [tick])
 }

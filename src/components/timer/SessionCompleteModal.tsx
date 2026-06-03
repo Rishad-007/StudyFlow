@@ -5,7 +5,6 @@ interface SessionCompleteModalProps {
   open: boolean
   durationSeconds: number
   subjectName: string | null
-  chapterName: string | null
   onSave: (notes: string) => Promise<void>
   onDiscard: () => void
 }
@@ -23,7 +22,6 @@ export function SessionCompleteModal({
   open,
   durationSeconds,
   subjectName,
-  chapterName,
   onSave,
   onDiscard,
 }: SessionCompleteModalProps) {
@@ -63,12 +61,6 @@ export function SessionCompleteModal({
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Subject</span>
               <span className="font-medium text-gray-900">{subjectName}</span>
-            </div>
-          )}
-          {chapterName && (
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Chapter</span>
-              <span className="font-medium text-gray-900">{chapterName}</span>
             </div>
           )}
         </div>

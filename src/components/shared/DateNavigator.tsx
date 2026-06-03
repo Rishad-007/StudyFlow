@@ -29,18 +29,18 @@ function formatRange(dateStr: string, period: Period): string {
 export function DateNavigator({ date, period, onPrev, onNext, onToday }: DateNavigatorProps) {
   return (
     <div className="flex items-center gap-2">
-      <button onClick={onPrev} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100">
+      <button onClick={onPrev} className="rounded-lg p-2 text-gray-400 hover:bg-gray-100">
         <ChevronLeft className="h-5 w-5" />
       </button>
-      <span className="min-w-[160px] text-center text-sm font-medium text-gray-700">
+      <span className="min-w-[140px] text-center text-sm font-medium text-gray-700">
         {formatRange(date, period)}
       </span>
-      <button onClick={onNext} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100">
+      <button onClick={onNext} className="rounded-lg p-2 text-gray-400 hover:bg-gray-100">
         <ChevronRight className="h-5 w-5" />
       </button>
       <button
         onClick={onToday}
-        className="ml-2 rounded-lg border border-gray-200 px-3 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50"
+        className="ml-2 rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-600 hover:bg-gray-50"
       >
         Today
       </button>

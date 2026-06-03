@@ -3,7 +3,6 @@ import { useSubjects } from '@/hooks/useSubjects'
 import { useSubjectStore } from '@/stores/subjectStore'
 import { SubjectCard } from '@/components/subjects/SubjectCard'
 import { AddSubjectModal } from '@/components/subjects/AddSubjectModal'
-import { AddChapterModal } from '@/components/subjects/AddChapterModal'
 import { UpdateCheckpointModal } from '@/components/subjects/UpdateCheckpointModal'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { PageHeader } from '@/components/shared/PageHeader'
@@ -18,8 +17,6 @@ export default function SubjectsPage() {
 
   const [subjectModalOpen, setSubjectModalOpen] = useState(false)
   const [editingSubject, setEditingSubject] = useState<Subject | undefined>()
-  const [chapterModalOpen, setChapterModalOpen] = useState(false)
-  const [chapterSubjectId, setChapterSubjectId] = useState<string | undefined>()
   const [checkpointModalOpen, setCheckpointModalOpen] = useState(false)
   const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null)
   const [deleteSubjectConfirm, setDeleteSubjectConfirm] = useState<Subject | null>(null)
@@ -75,10 +72,6 @@ export default function SubjectsPage() {
                 setSubjectModalOpen(true)
               }}
               onDelete={(s) => setDeleteSubjectConfirm(s)}
-              onAddChapter={(s) => {
-                setChapterSubjectId(s.id)
-                setChapterModalOpen(true)
-              }}
               onEditChapter={() => {}}
               onDeleteChapter={(ch) => setDeleteChapterConfirm(ch)}
               onUpdateProgress={(ch) => {
@@ -97,25 +90,12 @@ export default function SubjectsPage() {
           setSubjectModalOpen(false)
           setEditingSubject(undefined)
         }}
-        onSave={async (name, color) => {
+        onSave={async (name: string, color: string) => {
           if (editingSubject) {
             await store.updateSubject(editingSubject.id, { name, color })
           } else {
             await store.addSubject(name, color)
           }
-        }}
-      />
-
-      <AddChapterModal
-        open={chapterModalOpen}
-        subjects={subjects}
-        preselectedSubjectId={chapterSubjectId}
-        onClose={() => {
-          setChapterModalOpen(false)
-          setChapterSubjectId(undefined)
-        }}
-        onSave={async (subjectId, name) => {
-          await store.addChapter(subjectId, name)
         }}
       />
 

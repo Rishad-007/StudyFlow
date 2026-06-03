@@ -102,27 +102,27 @@ function TodoRow({
   return (
     <div
       className={cn(
-        'flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-gray-50',
+        'flex items-center gap-2 rounded-lg px-3 py-2.5 transition-colors hover:bg-gray-50',
         todo.done && 'opacity-50',
       )}
     >
       <button
         onClick={() => onToggle(todo.id)}
         className={cn(
-          'flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors',
+          'flex h-7 w-7 shrink-0 items-center justify-center rounded border-2 transition-colors',
           todo.done
             ? 'border-indigo-500 bg-indigo-500 text-white'
             : 'border-gray-300 hover:border-indigo-400',
         )}
       >
-        {todo.done && <Check className="h-3 w-3" />}
+        {todo.done && <Check className="h-4 w-4" />}
       </button>
       <span className={cn('flex-1 text-sm', todo.done && 'text-gray-400 line-through')}>{todo.text}</span>
       <button
         onClick={() => onDelete(todo.id)}
-        className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-500"
+        className="rounded p-2 text-gray-400 hover:bg-red-50 hover:text-red-500"
       >
-        <Trash2 className="h-3.5 w-3.5" />
+        <Trash2 className="h-4 w-4" />
       </button>
     </div>
   )

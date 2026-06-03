@@ -102,6 +102,7 @@ export function DailyPlanner() {
                       <input
                         type="number"
                         min={0}
+                        inputMode="numeric"
                         className="w-16 rounded border border-gray-200 px-2 py-1 text-center text-xs outline-none focus:border-indigo-500"
                         placeholder="min"
                         value={plan?.planned ?? ''}
@@ -113,6 +114,7 @@ export function DailyPlanner() {
                       <input
                         type="number"
                         min={0}
+                        inputMode="numeric"
                         className="w-16 rounded border border-gray-200 px-2 py-1 text-center text-xs outline-none focus:border-indigo-500"
                         placeholder="min"
                         value={plan?.actual ?? ''}
@@ -128,7 +130,7 @@ export function DailyPlanner() {
                             onClick={async () => {
                               if (plan?.id) await updateDailyPlanStatus(plan.id, st)
                             }}
-                            className={`rounded-lg p-1.5 transition-colors ${
+                            className={`rounded-lg p-2 transition-colors ${
                               plan?.status === st ? 'opacity-100' : 'opacity-40 hover:opacity-70'
                             }`}
                             title={st.replace('_', ' ')}
@@ -154,7 +156,7 @@ export function DailyPlanner() {
               await updateDailyPlanStatus(p.id, 'done')
             }
           }}
-          className="w-full rounded-lg border border-gray-200 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
+          className="w-full rounded-lg border border-gray-200 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50"
         >
           Mark all as done
         </button>

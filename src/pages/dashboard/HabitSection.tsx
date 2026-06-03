@@ -88,13 +88,13 @@ export function HabitSection() {
                 <button
                   onClick={() => completeToday(habit.id)}
                   className={cn(
-                    'flex h-6 w-6 shrink-0 items-center justify-center rounded border-2 transition-colors',
+                    'flex h-8 w-8 shrink-0 items-center justify-center rounded border-2 transition-colors',
                     isDone
                       ? 'border-indigo-500 bg-indigo-500 text-white'
                       : 'border-gray-300 hover:border-indigo-400',
                   )}
                 >
-                  {isDone && <Check className="h-3.5 w-3.5" />}
+                  {isDone && <Check className="h-4 w-4" />}
                 </button>
                 <span className={cn('flex-1 text-sm', isDone && 'text-gray-400 line-through')}>
                   {habit.name}
@@ -105,9 +105,9 @@ export function HabitSection() {
                 </div>
                 <button
                   onClick={() => deleteHabit(habit.id)}
-                  className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-500"
+                  className="rounded p-2 text-gray-400 hover:bg-red-50 hover:text-red-500"
                 >
-                  <X className="h-3.5 w-3.5" />
+                  <X className="h-4 w-4" />
                 </button>
               </div>
             )

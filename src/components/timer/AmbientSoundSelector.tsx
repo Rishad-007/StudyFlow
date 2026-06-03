@@ -33,21 +33,21 @@ export function AmbientSoundSelector({
         )}
       </div>
 
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
         {SOUND_OPTIONS.map((sound) => (
           <button
             key={sound.id}
             onClick={() => onSelect(currentSound === sound.id ? null : sound.id)}
             className={cn(
-              'flex flex-col items-center gap-1 rounded-lg border p-2.5 text-center transition-colors',
+              'flex flex-col items-center gap-1 rounded-lg border p-3 text-center transition-colors sm:p-2.5',
               currentSound === sound.id
                 ? 'border-indigo-400 bg-indigo-50 text-indigo-700'
                 : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50',
             )}
             title={sound.label}
           >
-            <span className="text-lg">{sound.emoji}</span>
-            <span className="text-[10px] font-medium leading-tight">{sound.label}</span>
+            <span className="text-xl sm:text-lg">{sound.emoji}</span>
+            <span className="text-xs font-medium leading-tight sm:text-[10px]">{sound.label}</span>
           </button>
         ))}
       </div>
@@ -66,7 +66,7 @@ export function AmbientSoundSelector({
             step={0.05}
             value={volume}
             onChange={(e) => onVolumeChange(Number(e.target.value))}
-            className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-gray-200 accent-indigo-500 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-500"
+            className="h-2 w-full cursor-pointer appearance-none rounded-full bg-gray-200 accent-indigo-500 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-500"
           />
         </div>
       )}

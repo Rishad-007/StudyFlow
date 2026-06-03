@@ -35,7 +35,7 @@ export function SummaryCards({ totalTime, totalSessions, productiveHour }: Summa
       {cards.map((card) => (
         <div key={card.label} className="rounded-xl border border-gray-200 bg-white p-4">
           <card.icon className={`h-5 w-5 ${card.color}`} />
-          <div className="mt-2 text-2xl font-bold text-gray-900">{card.value}</div>
+          <div className="mt-2 text-lg font-bold text-gray-900 md:text-2xl">{card.value}</div>
           <div className="text-xs text-gray-500">{card.label}</div>
           {card.sub && <div className="text-xs text-gray-400">{card.sub}</div>}
         </div>

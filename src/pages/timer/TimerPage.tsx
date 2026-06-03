@@ -8,7 +8,6 @@ import { useAmbientSound } from '@/hooks/useAmbientSound'
 import { supabase } from '@/services/supabase'
 import { CircularTimer } from '@/components/timer/CircularTimer'
 import { TimerControls } from '@/components/timer/TimerControls'
-import { SubjectChapterSelector } from '@/components/timer/SubjectChapterSelector'
 import { SessionCompleteModal } from '@/components/timer/SessionCompleteModal'
 import { AmbientSoundSelector } from '@/components/timer/AmbientSoundSelector'
 import { SessionReflection } from '@/components/shared/SessionReflection'
@@ -23,7 +22,6 @@ export default function TimerPage() {
 
   const s = useTimerStore()
   const subjects = useSubjectStore((s) => s.subjects)
-  const chapters = useSubjectStore((s) => s.chapters)
 
   const { todos, addTodo, toggleTodo, deleteTodo, linkToSession } = useTodos()
   const { currentSound, volume, isPlaying, play, stop, setVolume } = useAmbientSound()
@@ -33,8 +31,7 @@ export default function TimerPage() {
   const [sessionNotes, setSessionNotes] = useState('')
   const [showTodo, setShowTodo] = useState(false)
 
-  const chapter = chapters.find((ch) => ch.id === s.selectedChapterId)
-  const subject = subjects.find((sub) => sub.id === (chapter?.subject_id ?? s.selectedSubjectId))
+  const subject = subjects.find((sub) => sub.id === s.selectedSubjectId)
 
   const totalSeconds =
     s.mode === 'free'
@@ -141,24 +138,28 @@ export default function TimerPage() {
         />
       </div>
 
-      {/* Subject / Chapter selector */}
+      {/* Subject selector */}
       <div className="mt-8 w-full max-w-md">
-        <SubjectChapterSelector
-          subjects={subjects}
-          chapters={chapters}
-          selectedSubjectId={s.selectedSubjectId}
-          selectedChapterId={s.selectedChapterId}
-          onSubjectChange={s.setSubject}
-          onChapterChange={s.setChapter}
+        <label className="block text-xs font-medium text-gray-500 mb-1">Subject</label>
+        <select
+          value={s.selectedSubjectId ?? ''}
+          onChange={(e) => s.setSubject(e.target.value || null)}
           disabled={s.status !== 'idle'}
-        />
+          className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <option value="">No subject</option>
+          {subjects.map((sub) => (
+            <option key={sub.id} value={sub.id}>
+              {sub.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Current session info */}
-      {(s.selectedSubjectId || s.selectedChapterId) && s.status !== 'idle' && (
+      {s.selectedSubjectId && s.status !== 'idle' && (
         <div className="mt-4 text-center text-sm text-gray-500">
           {subject && <span>Studying: <strong>{subject.name}</strong></span>}
-          {chapter && <span> — {chapter.name}</span>}
         </div>
       )}
 
@@ -202,7 +203,6 @@ export default function TimerPage() {
         open={completeOpen}
         durationSeconds={s.elapsedSeconds}
         subjectName={subject?.name ?? null}
-        chapterName={chapter?.name ?? null}
         onSave={handleSaveNotes}
         onDiscard={handleDiscard}
       />
@@ -211,7 +211,6 @@ export default function TimerPage() {
       <SessionReflection
         open={reflectionOpen}
         subjectName={subject?.name ?? null}
-        chapterName={chapter?.name ?? null}
         onSave={handleSaveReflection}
         onSkip={() => {
           setReflectionOpen(false)

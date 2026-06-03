@@ -80,26 +80,28 @@ export function WeeklyPlanner() {
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-2">
-        {days.map((day, i) => {
-          const dayStr = format(day, 'yyyy-MM-dd')
-          return (
-            <DayColumn
-              key={dayStr}
-              day={DAY_NAMES[i]}
-              date={day.getDate()}
-              isToday={dayStr === todayStr}
-              plans={plansByDay[i] ?? []}
-              chapterNames={chapterNames}
-              chapterColors={chapterColors}
-              onAddChapter={() => {
-                setModalDay(i)
-                setModalOpen(true)
-              }}
-              onRemoveChapter={(planId) => removeFromWeeklyPlan(planId)}
-            />
-          )
-        })}
+      <div className="overflow-x-auto pb-2">
+        <div className="grid min-w-[560px] grid-cols-7 gap-2 sm:min-w-0">
+          {days.map((day, i) => {
+            const dayStr = format(day, 'yyyy-MM-dd')
+            return (
+              <DayColumn
+                key={dayStr}
+                day={DAY_NAMES[i]}
+                date={day.getDate()}
+                isToday={dayStr === todayStr}
+                plans={plansByDay[i] ?? []}
+                chapterNames={chapterNames}
+                chapterColors={chapterColors}
+                onAddChapter={() => {
+                  setModalDay(i)
+                  setModalOpen(true)
+                }}
+                onRemoveChapter={(planId) => removeFromWeeklyPlan(planId)}
+              />
+            )
+          })}
+        </div>
       </div>
 
       <AddToWeekModal

@@ -8,13 +8,11 @@ export interface SoundOption {
 }
 
 export const SOUND_OPTIONS: SoundOption[] = [
-  { id: 'rain', label: 'Rain', emoji: '🌧️', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-  { id: 'ocean', label: 'Ocean Waves', emoji: '🌊', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-  { id: 'fireplace', label: 'Fireplace', emoji: '🔥', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-  { id: 'forest', label: 'Forest Birds', emoji: '🌳', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
-  { id: 'whitenoise', label: 'White Noise', emoji: '🤍', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
-  { id: 'deepfocus', label: 'Deep Focus', emoji: '🧘', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' },
-  { id: 'cafe', label: 'Cafe', emoji: '☕', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' },
+  { id: 'rain', label: 'Rain', emoji: '🌧️', url: '/sounds/rain.wav' },
+  { id: 'forest', label: 'Forest Birds', emoji: '🌳', url: '/sounds/forest.mp3' },
+  { id: 'whitenoise', label: 'White Noise', emoji: '🤍', url: '/sounds/whitenoise.mp3' },
+  { id: 'deepfocus', label: 'Deep Focus', emoji: '🧘', url: '/sounds/deepfocus.mp3' },
+  { id: 'cafe', label: 'Cafe', emoji: '☕', url: '/sounds/cafe.mp3' },
 ]
 
 const VOLUME_KEY = 'studyflow-ambient-volume'

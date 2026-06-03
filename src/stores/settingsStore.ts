@@ -59,11 +59,18 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     const user = useAuthStore.getState().user
     if (!user) return
 
-    const updates: Record<string, string> = {}
-    if (fullName !== undefined) updates.full_name = fullName
-    if (avatarUrl !== undefined) updates.avatar_url = avatarUrl
+    const metadata: Record<string, string> = {}
+    if (fullName !== undefined) metadata.full_name = fullName
+    if (avatarUrl !== undefined) metadata.avatar_url = avatarUrl
 
-    await supabase.from('profiles').update(updates).eq('id', user.id)
+    const { error } = await supabase.auth.updateUser({ data: metadata })
+    if (error) {
+      toast.error(error.message)
+      return
+    }
+
+    // Keep profiles table in sync for DB queries
+    await supabase.from('profiles').update(metadata).eq('id', user.id)
     toast.success('Profile updated')
   },
 

@@ -28,9 +28,14 @@ export function AddSubjectModal({ open, onClose, onSave, initial }: AddSubjectMo
   const handleSave = async () => {
     if (!name.trim()) return
     setSaving(true)
-    await onSave(name.trim(), color)
-    setSaving(false)
-    onClose()
+    try {
+      await onSave(name.trim(), color)
+      onClose()
+    } catch {
+      // Error toast is shown by the store
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (

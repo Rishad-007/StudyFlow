@@ -106,14 +106,14 @@ export function SessionsTable({ sessions, subjectNames, chapterNames }: Sessions
             <button
               onClick={() => setPage(Math.max(0, page - 1))}
               disabled={page === 0}
-              className="rounded px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 disabled:opacity-30"
+              className="rounded px-3 py-2 text-xs text-gray-600 hover:bg-gray-100 disabled:opacity-30"
             >
               Prev
             </button>
             <button
               onClick={() => setPage(Math.min(pageCount - 1, page + 1))}
               disabled={page >= pageCount - 1}
-              className="rounded px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 disabled:opacity-30"
+              className="rounded px-3 py-2 text-xs text-gray-600 hover:bg-gray-100 disabled:opacity-30"
             >
               Next
             </button>

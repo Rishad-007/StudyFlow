@@ -56,12 +56,12 @@ export function CircularTimer({
   const label = isBreak ? 'Break' : mode === 'pomodoro' ? 'Focus' : 'Study'
 
   return (
-    <div className="relative flex items-center justify-center">
+    <div className="relative flex w-full max-w-[280px] items-center justify-center">
       <svg
         width={size}
         height={size}
         className={cn(
-          'drop-shadow-sm transition-transform',
+          'h-auto w-full drop-shadow-sm transition-transform',
           status === 'running' && 'scale-[1.02]',
         )}
       >

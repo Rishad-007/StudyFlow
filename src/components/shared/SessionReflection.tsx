@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils'
 interface SessionReflectionProps {
   open: boolean
   subjectName: string | null
-  chapterName: string | null
   onSave: (data: ReflectionData) => Promise<void>
   onSkip: () => void
   onClose: () => void
@@ -28,7 +27,7 @@ const MOODS = [
   { emoji: '💪', label: 'Motivated' },
 ]
 
-export function SessionReflection({ open, subjectName, chapterName, onSave, onSkip, onClose }: SessionReflectionProps) {
+export function SessionReflection({ open, subjectName, onSave, onSkip, onClose }: SessionReflectionProps) {
   const [rating, setRating] = useState(0)
   const [hoverRating, setHoverRating] = useState(0)
   const [mood, setMood] = useState('')
@@ -65,10 +64,8 @@ export function SessionReflection({ open, subjectName, chapterName, onSave, onSk
           </button>
         </div>
 
-        {(subjectName || chapterName) && (
-          <p className="mb-4 text-sm text-gray-500">
-            {subjectName}{chapterName ? ` — ${chapterName}` : ''}
-          </p>
+        {subjectName && (
+          <p className="mb-4 text-sm text-gray-500">{subjectName}</p>
         )}
 
         {/* Rating */}

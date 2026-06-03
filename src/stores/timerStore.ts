@@ -12,13 +12,12 @@ interface TimerState {
   pomodoroSession: 'work' | 'break'
   pomodoroCount: number
   selectedSubjectId: string | null
-  selectedChapterId: string | null
   sessionId: string | null
   startTime: string | null
+  lastTickAt: string | null
 
   setMode: (mode: 'free' | 'pomodoro') => void
   setSubject: (id: string | null) => void
-  setChapter: (id: string | null) => void
   setPomodoroWork: (minutes: number) => void
   setPomodoroBreak: (minutes: number) => void
   startTimer: () => Promise<void>
@@ -40,8 +39,8 @@ function saveToLocal(state: TimerState) {
     elapsedSeconds: state.elapsedSeconds,
     sessionId: state.sessionId,
     selectedSubjectId: state.selectedSubjectId,
-    selectedChapterId: state.selectedChapterId,
     startTime: state.startTime,
+    lastTickAt: state.lastTickAt,
     pomodoroSession: state.pomodoroSession,
     pomodoroCount: state.pomodoroCount,
     pomodoroWorkMinutes: state.pomodoroWorkMinutes,
@@ -59,13 +58,12 @@ export const useTimerStore = create<TimerState>((set, get) => ({
   pomodoroSession: 'work',
   pomodoroCount: 0,
   selectedSubjectId: null,
-  selectedChapterId: null,
   sessionId: null,
   startTime: null,
+  lastTickAt: null,
 
   setMode: (mode) => set({ mode }),
-  setSubject: (id) => set({ selectedSubjectId: id, selectedChapterId: null }),
-  setChapter: (id) => set({ selectedChapterId: id }),
+  setSubject: (id) => set({ selectedSubjectId: id }),
   setPomodoroWork: (minutes) => set({ pomodoroWorkMinutes: minutes }),
   setPomodoroBreak: (minutes) => set({ pomodoroBreakMinutes: minutes }),
 
@@ -81,7 +79,6 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       .insert({
         user_id: user.id,
         subject_id: s.selectedSubjectId,
-        chapter_id: s.selectedChapterId,
         started_at: now,
         session_type: s.mode,
       })
@@ -98,6 +95,7 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       sessionId: data.id,
       startTime: now,
       elapsedSeconds: 0,
+      lastTickAt: now,
     })
   },
 
@@ -123,7 +121,7 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       .update({ started_at: now })
       .eq('id', s.sessionId)
 
-    set({ status: 'running', startTime: now })
+    set({ status: 'running', startTime: now, lastTickAt: now })
   },
 
   stopTimer: async () => {
@@ -139,7 +137,7 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       })
       .eq('id', s.sessionId)
 
-    set({ status: 'idle', sessionId: null, startTime: null })
+    set({ status: 'idle', sessionId: null, startTime: null, lastTickAt: null })
     localStorage.removeItem(STORAGE_KEY)
   },
 
@@ -147,8 +145,14 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     const s = get()
     if (s.status !== 'running') return
 
-    const newElapsed = s.elapsedSeconds + 1
-    set({ elapsedSeconds: newElapsed })
+    const now = Date.now()
+    const lastTick = s.lastTickAt ? new Date(s.lastTickAt).getTime() : now
+    const delta = Math.max(0, Math.floor((now - lastTick) / 1000))
+
+    if (delta === 0) return
+
+    const newElapsed = s.elapsedSeconds + delta
+    set({ elapsedSeconds: newElapsed, lastTickAt: new Date(now).toISOString() })
 
     // Pomodoro auto-switch logic
     if (s.mode === 'pomodoro') {
@@ -174,6 +178,7 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       elapsedSeconds: 0,
       sessionId: null,
       startTime: null,
+      lastTickAt: null,
       pomodoroSession: 'work',
       pomodoroCount: 0,
     })
@@ -199,8 +204,8 @@ export const useTimerStore = create<TimerState>((set, get) => ({
         elapsedSeconds: saved.elapsedSeconds ?? 0,
         sessionId: saved.sessionId ?? null,
         selectedSubjectId: saved.selectedSubjectId ?? null,
-        selectedChapterId: saved.selectedChapterId ?? null,
         startTime: saved.startTime ?? null,
+        lastTickAt: saved.lastTickAt ?? null,
         pomodoroSession: saved.pomodoroSession ?? 'work',
         pomodoroCount: saved.pomodoroCount ?? 0,
         pomodoroWorkMinutes: saved.pomodoroWorkMinutes ?? 25,
