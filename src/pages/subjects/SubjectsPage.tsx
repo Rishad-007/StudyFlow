@@ -5,9 +5,10 @@ import { SubjectCard } from '@/components/subjects/SubjectCard'
 import { AddSubjectModal } from '@/components/subjects/AddSubjectModal'
 import { AddChapterModal } from '@/components/subjects/AddChapterModal'
 import { UpdateCheckpointModal } from '@/components/subjects/UpdateCheckpointModal'
+import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { EmptyState } from '@/components/shared/EmptyState'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { SkeletonCard } from '@/components/shared/Skeleton'
 import { BookOpen, Plus } from 'lucide-react'
 import type { Subject, Chapter } from '@/types'
 
@@ -21,9 +22,15 @@ export default function SubjectsPage() {
   const [chapterSubjectId, setChapterSubjectId] = useState<string | undefined>()
   const [checkpointModalOpen, setCheckpointModalOpen] = useState(false)
   const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null)
+  const [deleteSubjectConfirm, setDeleteSubjectConfirm] = useState<Subject | null>(null)
+  const [deleteChapterConfirm, setDeleteChapterConfirm] = useState<Chapter | null>(null)
 
   if (loading && subjects.length === 0) {
-    return <LoadingSpinner />
+    return (
+      <div className="grid gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3 md:p-6">
+        {Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)}
+      </div>
+    )
   }
 
   return (
@@ -33,6 +40,7 @@ export default function SubjectsPage() {
         description="Manage your subjects and track chapter progress"
         actions={
           <button
+            data-add-subject
             onClick={() => {
               setEditingSubject(undefined)
               setSubjectModalOpen(true)
@@ -66,21 +74,13 @@ export default function SubjectsPage() {
                 setEditingSubject(s)
                 setSubjectModalOpen(true)
               }}
-              onDelete={async (s) => {
-                if (confirm(`Delete "${s.name}" and all its chapters?`)) {
-                  await store.deleteSubject(s.id)
-                }
-              }}
+              onDelete={(s) => setDeleteSubjectConfirm(s)}
               onAddChapter={(s) => {
                 setChapterSubjectId(s.id)
                 setChapterModalOpen(true)
               }}
               onEditChapter={() => {}}
-              onDeleteChapter={async (ch) => {
-                if (confirm(`Delete "${ch.name}"?`)) {
-                  await store.deleteChapter(ch.id)
-                }
-              }}
+              onDeleteChapter={(ch) => setDeleteChapterConfirm(ch)}
               onUpdateProgress={(ch) => {
                 setSelectedChapter(ch)
                 setCheckpointModalOpen(true)
@@ -129,6 +129,32 @@ export default function SubjectsPage() {
         onSave={async (id, progressPct, checkpointText) => {
           await store.updateChapterProgress(id, progressPct, checkpointText)
         }}
+      />
+
+      <ConfirmDialog
+        open={deleteSubjectConfirm !== null}
+        title="Delete Subject"
+        message={`Delete "${deleteSubjectConfirm?.name}" and all its chapters? This cannot be undone.`}
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={async () => {
+          if (deleteSubjectConfirm) await store.deleteSubject(deleteSubjectConfirm.id)
+          setDeleteSubjectConfirm(null)
+        }}
+        onCancel={() => setDeleteSubjectConfirm(null)}
+      />
+
+      <ConfirmDialog
+        open={deleteChapterConfirm !== null}
+        title="Delete Chapter"
+        message={`Delete "${deleteChapterConfirm?.name}"? This cannot be undone.`}
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={async () => {
+          if (deleteChapterConfirm) await store.deleteChapter(deleteChapterConfirm.id)
+          setDeleteChapterConfirm(null)
+        }}
+        onCancel={() => setDeleteChapterConfirm(null)}
       />
     </div>
   )

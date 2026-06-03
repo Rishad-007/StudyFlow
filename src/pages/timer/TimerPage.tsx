@@ -1,16 +1,21 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useTimerStore } from '@/stores/timerStore'
 import { useSubjectStore } from '@/stores/subjectStore'
 import { useSubjects } from '@/hooks/useSubjects'
 import { useTimer } from '@/hooks/useTimer'
+import { useTodos } from '@/hooks/useTodos'
+import { useAmbientSound } from '@/hooks/useAmbientSound'
 import { supabase } from '@/services/supabase'
 import { CircularTimer } from '@/components/timer/CircularTimer'
 import { TimerControls } from '@/components/timer/TimerControls'
 import { SubjectChapterSelector } from '@/components/timer/SubjectChapterSelector'
 import { SessionCompleteModal } from '@/components/timer/SessionCompleteModal'
+import { AmbientSoundSelector } from '@/components/timer/AmbientSoundSelector'
+import { SessionReflection } from '@/components/shared/SessionReflection'
+import { QuickTodo } from '@/components/shared/QuickTodo'
 import { cn } from '@/lib/utils'
 import toast from 'react-hot-toast'
-import { Headphones } from 'lucide-react'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 
 export default function TimerPage() {
   useTimer()
@@ -20,7 +25,13 @@ export default function TimerPage() {
   const subjects = useSubjectStore((s) => s.subjects)
   const chapters = useSubjectStore((s) => s.chapters)
 
+  const { todos, addTodo, toggleTodo, deleteTodo, linkToSession } = useTodos()
+  const { currentSound, volume, isPlaying, play, stop, setVolume } = useAmbientSound()
+
   const [completeOpen, setCompleteOpen] = useState(false)
+  const [reflectionOpen, setReflectionOpen] = useState(false)
+  const [sessionNotes, setSessionNotes] = useState('')
+  const [showTodo, setShowTodo] = useState(false)
 
   const chapter = chapters.find((ch) => ch.id === s.selectedChapterId)
   const subject = subjects.find((sub) => sub.id === (chapter?.subject_id ?? s.selectedSubjectId))
@@ -32,28 +43,46 @@ export default function TimerPage() {
         ? s.pomodoroWorkMinutes * 60
         : s.pomodoroBreakMinutes * 60
 
-  const handleStop = async () => {
+  const handleStop = useCallback(async () => {
     if (s.elapsedSeconds > 0) {
       setCompleteOpen(true)
     } else {
       await s.stopTimer()
     }
-  }
+  }, [s.elapsedSeconds, s.stopTimer])
 
-  const handleSaveNotes = async (notes: string) => {
+  const handleSaveNotes = useCallback(async (notes: string) => {
+    setSessionNotes(notes)
     const sessionId = useTimerStore.getState().sessionId
     if (sessionId) {
       await supabase.from('study_sessions').update({ notes }).eq('id', sessionId)
     }
     await s.stopTimer()
     setCompleteOpen(false)
-    toast.success('Session saved!')
-  }
+    setReflectionOpen(true)
+  }, [s.stopTimer])
 
-  const handleDiscard = async () => {
+  const handleDiscard = useCallback(async () => {
     await s.stopTimer()
     setCompleteOpen(false)
-  }
+  }, [s.stopTimer])
+
+  const handleSaveReflection = useCallback(async (data: { rating: number; mood: string; takeaways: string; difficulties: string; tomorrowFocus: string }) => {
+    const reflectionText = JSON.stringify({
+      rating: data.rating,
+      mood: data.mood,
+      takeaways: data.takeaways,
+      difficulties: data.difficulties,
+      tomorrowFocus: data.tomorrowFocus,
+      notes: sessionNotes,
+    })
+    const sessionId = useTimerStore.getState().sessionId
+    if (sessionId) {
+      await supabase.from('study_sessions').update({ notes: reflectionText }).eq('id', sessionId)
+    }
+    setReflectionOpen(false)
+    toast.success('Reflection saved!')
+  }, [sessionNotes])
 
   return (
     <div className="flex flex-col items-center px-4 py-8 md:py-12">
@@ -108,7 +137,7 @@ export default function TimerPage() {
           onStart={s.startTimer}
           onPause={s.pauseTimer}
           onResume={s.resumeTimer}
-            onStop={handleStop}
+          onStop={handleStop}
         />
       </div>
 
@@ -133,10 +162,39 @@ export default function TimerPage() {
         </div>
       )}
 
-      {/* Ambient sound selector (placeholder) */}
-      <div className="mt-8 flex items-center gap-2 text-sm text-gray-400">
-        <Headphones className="h-4 w-4" />
-        <span>Ambient sounds coming soon</span>
+      {/* Ambient Sounds */}
+      <div className="mt-8 w-full max-w-md">
+        <AmbientSoundSelector
+          currentSound={currentSound}
+          volume={volume}
+          isPlaying={isPlaying}
+          onSelect={(id) => (id ? play(id) : stop())}
+          onVolumeChange={setVolume}
+          onStop={stop}
+        />
+      </div>
+
+      {/* Todo Toggle */}
+      <div className="mt-4 w-full max-w-md">
+        <button
+          onClick={() => setShowTodo(!showTodo)}
+          className="flex w-full items-center gap-2 text-sm text-gray-400 hover:text-gray-600"
+        >
+          {showTodo ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          {showTodo ? 'Hide todo list' : 'Show todo list'}
+        </button>
+        {showTodo && (
+          <div className="mt-2">
+            <QuickTodo
+              todos={todos}
+              onAdd={addTodo}
+              onToggle={toggleTodo}
+              onDelete={deleteTodo}
+              sessionId={s.sessionId}
+              onLinkToSession={linkToSession}
+            />
+          </div>
+        )}
       </div>
 
       {/* Session Complete Modal */}
@@ -147,6 +205,22 @@ export default function TimerPage() {
         chapterName={chapter?.name ?? null}
         onSave={handleSaveNotes}
         onDiscard={handleDiscard}
+      />
+
+      {/* Session Reflection */}
+      <SessionReflection
+        open={reflectionOpen}
+        subjectName={subject?.name ?? null}
+        chapterName={chapter?.name ?? null}
+        onSave={handleSaveReflection}
+        onSkip={() => {
+          setReflectionOpen(false)
+          toast.success('Session saved!')
+        }}
+        onClose={() => {
+          setReflectionOpen(false)
+          toast.success('Session saved!')
+        }}
       />
     </div>
   )

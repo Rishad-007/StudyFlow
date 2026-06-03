@@ -9,7 +9,8 @@ import { QuickStartTimer } from '@/components/dashboard/QuickStartTimer'
 import { TodaysPlans } from '@/components/dashboard/TodaysPlans'
 import { RecentSessions } from '@/components/dashboard/RecentSessions'
 import { MotivationalQuote } from '@/components/dashboard/MotivationalQuote'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { HabitSection } from '@/pages/dashboard/HabitSection'
+import { SkeletonCard } from '@/components/shared/Skeleton'
 
 export default function DashboardPage() {
   const { user } = useAuth()
@@ -70,7 +71,15 @@ export default function DashboardPage() {
 
   const displayName = user?.user_metadata?.full_name ?? user?.email?.split('@')[0] ?? 'there'
 
-  if (loading) return <LoadingSpinner />
+  if (loading) return (
+    <div className="space-y-6 p-4 md:p-6">
+      <SkeletonCard />
+      <div className="grid gap-4 md:grid-cols-2">
+        <SkeletonCard />
+        <SkeletonCard />
+      </div>
+    </div>
+  )
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -101,10 +110,15 @@ export default function DashboardPage() {
         <TodaysPlans plans={enrichedPlans} />
       </div>
 
+      {/* Habit Tracker */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <HabitSection />
+        <MotivationalQuote />
+      </div>
+
       {/* Bottom Row */}
       <div className="grid gap-4 md:grid-cols-2">
         <RecentSessions sessions={recentSessions} subjectNames={subjectNames} />
-        <MotivationalQuote />
       </div>
     </div>
   )

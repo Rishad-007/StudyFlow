@@ -10,9 +10,9 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg'],
+      includeAssets: ['favicon.svg', 'apple-touch-icon.svg'],
       manifest: {
-        name: 'StudyFlow - Daily Study Routine',
+        name: 'StudyFlow - Study Routine Tracker',
         short_name: 'StudyFlow',
         description: 'Track your daily study sessions, manage subjects, and build streaks',
         theme_color: '#6366f1',
@@ -22,8 +22,34 @@ export default defineConfig({
         scope: '/',
         start_url: '/',
         icons: [
-          { src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+          {
+            src: '/pwa-192x192.svg',
+            sizes: '192x192',
+            type: 'image/svg+xml',
+          },
+          {
+            src: '/pwa-512x512.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml',
+            purpose: 'any maskable',
+          },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,svg,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https?:\/\/[a-z]+\.supabase\.co\/rest\/v1\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'supabase-api-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24,
+              },
+              networkTimeoutSeconds: 5,
+            },
+          },
         ],
       },
     }),

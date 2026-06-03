@@ -1,0 +1,1 @@
+import{i as e,s as t,t as n}from"./createLucideIcon-D7x81gW-.js";import{t as r}from"./subjectStore-DSHVQ-T3.js";var i=n(`chevron-right`,[[`path`,{d:`m9 18 6-6-6-6`,key:`mthhwq`}]]),a=t(e(),1);function o(){let e=r(),t=r(e=>e.subjects),n=r(e=>e.loading),i=r(e=>e.fetchSubjects);return(0,a.useEffect)(()=>{t.length===0&&!n&&i()},[]),e}export{i as n,o as t};

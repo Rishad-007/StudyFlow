@@ -1,1 +1,40 @@
 @import "tailwindcss";
+
+/* Safe area insets for notched phones */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Selection color */
+::selection {
+  background-color: #6366f1;
+  color: white;
+}
+
+/* Thin scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Print styles */
+@media print {
+  nav, header, footer, .bottom-nav, .sidebar {
+    display: none !important;
+  }
+}

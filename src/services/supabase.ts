@@ -67,4 +67,4 @@ function createNoopSupabaseClient() {
 export const supabase =
   supabaseUrl && supabaseAnonKey
     ? createClient(supabaseUrl, supabaseAnonKey)
-    : (createNoopSupabaseClient() as ReturnType<typeof createClient>)
+    : (createNoopSupabaseClient() as unknown as ReturnType<typeof createClient>)
