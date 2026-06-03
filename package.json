@@ -1,0 +1,49 @@
+{
+  "name": "studyflow",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "*",
+    "@tanstack/react-query": "*",
+    "@radix-ui/react-checkbox": "*",
+    "@radix-ui/react-dialog": "*",
+    "@radix-ui/react-dropdown-menu": "*",
+    "@radix-ui/react-label": "*",
+    "@radix-ui/react-progress": "*",
+    "@radix-ui/react-select": "*",
+    "@radix-ui/react-slider": "*",
+    "@radix-ui/react-slot": "*",
+    "@radix-ui/react-switch": "*",
+    "@radix-ui/react-tabs": "*",
+    "class-variance-authority": "*",
+    "clsx": "*",
+    "date-fns": "*",
+    "lucide-react": "*",
+    "react": "*",
+    "react-dom": "*",
+    "react-hot-toast": "*",
+    "react-router-dom": "*",
+    "recharts": "*",
+    "tailwind-merge": "*",
+    "zustand": "*"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "*",
+    "@types/node": "*",
+    "@types/react": "*",
+    "@types/react-dom": "*",
+    "@vitejs/plugin-react": "*",
+    "prettier": "*",
+    "prettier-plugin-tailwindcss": "*",
+    "tailwindcss": "*",
+    "typescript": "*",
+    "vite": "*",
+    "vite-plugin-pwa": "*"
+  }
+}
