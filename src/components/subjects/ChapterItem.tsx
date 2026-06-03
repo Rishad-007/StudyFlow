@@ -1,0 +1,59 @@
+import { Pencil, Trash2, RefreshCw } from 'lucide-react'
+import type { Chapter } from '@/types'
+import { ProgressBar } from '@/components/shared/ProgressBar'
+
+interface ChapterItemProps {
+  chapter: Chapter
+  subjectColor: string
+  onEdit: () => void
+  onDelete: () => void
+  onUpdateProgress: () => void
+}
+
+export function ChapterItem({
+  chapter,
+  subjectColor,
+  onEdit,
+  onDelete,
+  onUpdateProgress,
+}: ChapterItemProps) {
+  return (
+    <div className="flex items-center gap-3 rounded-lg bg-white px-3 py-2.5 shadow-sm">
+      <div className="flex-1">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-gray-800">{chapter.name}</span>
+          <span className="text-xs font-semibold text-gray-500">
+            {chapter.progress_pct}%
+          </span>
+        </div>
+        <div className="mt-1">
+          <ProgressBar value={chapter.progress_pct} color={subjectColor} size="sm" />
+        </div>
+        {chapter.checkpoint_text && (
+          <p className="mt-1 text-xs italic text-gray-400">{chapter.checkpoint_text}</p>
+        )}
+      </div>
+      <div className="flex items-center gap-1">
+        <button
+          onClick={onUpdateProgress}
+          className="rounded-lg p-1.5 text-indigo-400 hover:bg-indigo-50 hover:text-indigo-600"
+          title="Update progress"
+        >
+          <RefreshCw className="h-3.5 w-3.5" />
+        </button>
+        <button
+          onClick={onEdit}
+          className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+        >
+          <Pencil className="h-3.5 w-3.5" />
+        </button>
+        <button
+          onClick={onDelete}
+          className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      </div>
+    </div>
+  )
+}
