@@ -29,14 +29,14 @@ export function SessionsTable({ sessions, subjectNames, chapterNames }: Sessions
 
   if (sessions.length === 0) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-6 text-center text-sm text-gray-400">
+      <div className="rounded-xl border border-gray-200 bg-white p-6 text-center text-sm text-gray-400 shadow-sm">
         No completed sessions in this period
       </div>
     )
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white">
+    <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
       <div className="border-b border-gray-100 px-4 py-3">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -106,14 +106,14 @@ export function SessionsTable({ sessions, subjectNames, chapterNames }: Sessions
             <button
               onClick={() => setPage(Math.max(0, page - 1))}
               disabled={page === 0}
-              className="rounded px-3 py-2 text-xs text-gray-600 hover:bg-gray-100 disabled:opacity-30"
+              className="rounded-lg px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 disabled:opacity-30 transition-colors"
             >
               Prev
             </button>
             <button
               onClick={() => setPage(Math.min(pageCount - 1, page + 1))}
               disabled={page >= pageCount - 1}
-              className="rounded px-3 py-2 text-xs text-gray-600 hover:bg-gray-100 disabled:opacity-30"
+              className="rounded-lg px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 disabled:opacity-30 transition-colors"
             >
               Next
             </button>

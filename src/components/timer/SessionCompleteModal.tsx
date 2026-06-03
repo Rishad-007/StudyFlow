@@ -41,10 +41,15 @@ export function SessionCompleteModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center">
-      <div className="w-full rounded-t-xl bg-white p-6 shadow-xl sm:mx-auto sm:max-w-sm sm:rounded-xl">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center">
+      <div className="w-full rounded-t-xl bg-white p-6 shadow-2xl sm:mx-auto sm:max-w-sm sm:rounded-xl">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">Session Complete</h2>
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
+              <span className="text-lg">🎉</span>
+            </span>
+            <h2 className="text-lg font-semibold text-gray-900">Session Complete</h2>
+          </div>
           <button onClick={onDiscard} className="rounded-lg p-1 text-gray-400 hover:bg-gray-100">
             <X className="h-5 w-5" />
           </button>

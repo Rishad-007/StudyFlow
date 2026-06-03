@@ -64,6 +64,7 @@ export default function SignupPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-sm">
+        <div className="rounded-2xl border border-gray-200 bg-white px-8 py-10 shadow-lg">
         <div className="mb-8 text-center">
           <BookOpen className="mx-auto h-10 w-10 text-indigo-500" />
           <h1 className="mt-2 text-2xl font-bold text-gray-900">Create an account</h1>
@@ -165,6 +166,7 @@ export default function SignupPage() {
             {submitting ? 'Creating account...' : 'Create account'}
           </button>
         </form>
+        </div>
         <p className="mt-6 text-center text-sm text-gray-500">
           Already have an account?{' '}
           <Link to="/auth/login" className="text-indigo-600 hover:underline">

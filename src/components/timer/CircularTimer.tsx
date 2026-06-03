@@ -15,54 +15,36 @@ function formatTime(totalSec: number): string {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
 
-function formatLong(totalSec: number): string {
-  const h = Math.floor(totalSec / 3600)
-  const m = Math.floor((totalSec % 3600) / 60)
-  const s = totalSec % 60
-  if (h > 0) return `${h}h ${m}m ${s}s`
-  return `${m}m ${s}s`
-}
-
 export function CircularTimer({
   elapsedSeconds,
   totalSeconds,
-  mode,
   pomodoroSession,
   status,
-  size = 280,
+  size = 320,
 }: CircularTimerProps) {
-  const radius = 120
+  const radius = 130
   const circumference = 2 * Math.PI * radius
   const progress = totalSeconds > 0 ? elapsedSeconds / totalSeconds : 0
   const dashOffset = circumference * (1 - Math.min(progress, 1))
   const center = size / 2
-  const strokeWidth = 8
+  const strokeWidth = 10
 
-  const isBreak = mode === 'pomodoro' && pomodoroSession === 'break'
-  const trackColor = isBreak
-    ? 'stroke-amber-200'
-    : mode === 'pomodoro'
-      ? 'stroke-emerald-200'
-      : 'stroke-indigo-200'
-  const progressColor = isBreak
-    ? 'stroke-amber-500'
-    : mode === 'pomodoro'
-      ? 'stroke-emerald-500'
-      : 'stroke-indigo-500'
+  const isBreak = pomodoroSession === 'break'
+  const trackColor = isBreak ? 'stroke-amber-200' : 'stroke-emerald-200'
+  const progressColor = isBreak ? 'stroke-amber-500' : 'stroke-emerald-500'
 
-  const display =
-    mode === 'free' ? formatLong(elapsedSeconds) : formatTime(elapsedSeconds)
-
-  const label = isBreak ? 'Break' : mode === 'pomodoro' ? 'Focus' : 'Study'
+  const display = formatTime(elapsedSeconds)
+  const label = isBreak ? 'Break' : 'Focus Time'
 
   return (
-    <div className="relative flex w-full max-w-[280px] items-center justify-center">
+    <div className="relative flex w-full max-w-[280px] items-center justify-center sm:max-w-[320px]">
       <svg
         width={size}
         height={size}
+        viewBox={`0 0 ${size} ${size}`}
         className={cn(
-          'h-auto w-full drop-shadow-sm transition-transform',
-          status === 'running' && 'scale-[1.02]',
+          'h-auto w-full drop-shadow-sm transition-all duration-500',
+          status === 'running' && 'scale-[1.03] drop-shadow-lg',
         )}
       >
         <circle
@@ -90,14 +72,22 @@ export function CircularTimer({
         <span className="text-sm font-medium uppercase tracking-widest text-gray-400">
           {label}
         </span>
-        <span className="mt-1 text-4xl font-bold text-gray-900 tabular-nums">
+        <span className="mt-1 text-4xl font-bold text-gray-900 tabular-nums tracking-tight sm:text-5xl">
           {display}
         </span>
-        {mode === 'free' && status === 'idle' && (
-          <span className="mt-1 text-xs text-gray-400">Ready</span>
+        {status === 'idle' && (
+          <span className="mt-1.5 text-xs text-gray-400">Ready to focus</span>
         )}
         {status === 'paused' && (
-          <span className="mt-1 text-xs font-medium text-amber-500">Paused</span>
+          <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-600">
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+            Paused
+          </span>
+        )}
+        {status === 'running' && pomodoroSession === 'work' && totalSeconds > 0 && (
+          <span className="mt-1.5 text-xs font-medium text-emerald-600">
+            {Math.max(0, Math.ceil((totalSeconds - elapsedSeconds) / 60))} min remaining
+          </span>
         )}
       </div>
     </div>

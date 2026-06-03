@@ -27,15 +27,15 @@ export function DayColumn({
   return (
     <div
       className={cn(
-        'flex flex-col rounded-lg border bg-white p-3',
-        isToday ? 'border-indigo-300 ring-1 ring-indigo-100' : 'border-gray-200',
+        'flex flex-col rounded-xl border bg-white p-3',
+        isToday ? 'border-indigo-300 bg-indigo-50/30 ring-1 ring-indigo-100' : 'border-gray-200',
       )}
     >
-      <div className="mb-2 text-center">
+      <div className="mb-3 text-center">
         <div className="text-xs font-medium text-gray-500">{day}</div>
         <div
           className={cn(
-            'mx-auto mt-0.5 flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold',
+            'mx-auto mt-0.5 flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold',
             isToday ? 'bg-indigo-500 text-white' : 'text-gray-900',
           )}
         >
@@ -43,9 +43,11 @@ export function DayColumn({
         </div>
       </div>
 
-      <div className="flex min-h-[80px] flex-col gap-1.5">
+      <div className="flex min-h-[100px] flex-col gap-1.5">
         {plans.length === 0 ? (
-          <p className="py-3 text-center text-xs text-gray-300">No topics</p>
+          <div className="flex flex-1 items-center justify-center rounded-lg border-2 border-dashed border-gray-200 py-4">
+            <p className="text-xs text-gray-300">No topics</p>
+          </div>
         ) : (
           plans.map((plan) => (
             <ChapterPill
@@ -60,10 +62,10 @@ export function DayColumn({
 
       <button
         onClick={onAddChapter}
-        className="mt-2 flex items-center justify-center gap-1 rounded-lg py-1.5 text-xs font-medium text-indigo-500 hover:bg-indigo-50"
+        className="mt-3 flex items-center justify-center gap-1 rounded-lg border border-dashed border-gray-300 py-2 text-xs font-medium text-indigo-500 hover:bg-indigo-50 hover:border-indigo-300 transition-colors"
       >
         <Plus className="h-3.5 w-3.5" />
-        Add
+        Add chapter
       </button>
     </div>
   )

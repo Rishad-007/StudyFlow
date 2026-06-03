@@ -21,11 +21,11 @@ export default function PlanningPage() {
   }, [tab, selectedDate])
 
   return (
-    <div className="p-4 md:p-6">
+    <div>
       <PageHeader title="Plan" description="Plan your study sessions" />
 
       {/* Tab Switcher */}
-      <div className="mt-4 mb-6 flex overflow-hidden rounded-lg border border-gray-200 w-fit">
+      <div className="mt-6 mb-6 flex overflow-hidden rounded-lg border border-gray-200 shadow-sm w-fit">
         <button
           onClick={() => setTab('weekly')}
           className={cn(

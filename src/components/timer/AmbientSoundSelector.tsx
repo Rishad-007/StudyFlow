@@ -41,7 +41,7 @@ export function AmbientSoundSelector({
             className={cn(
               'flex flex-col items-center gap-1 rounded-lg border p-3 text-center transition-colors sm:p-2.5',
               currentSound === sound.id
-                ? 'border-indigo-400 bg-indigo-50 text-indigo-700'
+                ? 'border-indigo-400 bg-indigo-50 text-indigo-700 shadow-sm'
                 : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50',
             )}
             title={sound.label}
@@ -66,7 +66,7 @@ export function AmbientSoundSelector({
             step={0.05}
             value={volume}
             onChange={(e) => onVolumeChange(Number(e.target.value))}
-            className="h-2 w-full cursor-pointer appearance-none rounded-full bg-gray-200 accent-indigo-500 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-500"
+            className="h-2.5 w-full cursor-pointer appearance-none rounded-full bg-gray-200 accent-indigo-500 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-500 [&::-webkit-slider-thumb]:shadow-sm"
           />
         </div>
       )}

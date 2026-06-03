@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 
 export function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className={cn('rounded-xl border border-gray-200 bg-white p-4', className)}>
+    <div className={cn('rounded-xl border border-gray-200 bg-white p-4 shadow-sm', className)}>
       <div className="mb-3 flex items-center gap-3">
         <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200" />
         <div className="flex-1 space-y-2">
@@ -37,7 +37,7 @@ export function SkeletonCircle({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
 
 export function SkeletonChart({ className }: { className?: string }) {
   return (
-    <div className={cn('rounded-xl border border-gray-200 bg-white p-4', className)}>
+    <div className={cn('rounded-xl border border-gray-200 bg-white p-4 shadow-sm', className)}>
       <div className="mb-4 h-4 w-1/3 animate-pulse rounded bg-gray-200" />
       <div className="flex items-end gap-2">
         {Array.from({ length: 7 }).map((_, i) => (

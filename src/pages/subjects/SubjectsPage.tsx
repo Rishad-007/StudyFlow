@@ -24,14 +24,14 @@ export default function SubjectsPage() {
 
   if (loading && subjects.length === 0) {
     return (
-      <div className="grid gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3 md:p-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)}
       </div>
     )
   }
 
   return (
-    <div className="p-4 md:p-6">
+    <div>
       <PageHeader
         title="Subjects"
         description="Manage your subjects and track chapter progress"
@@ -42,7 +42,7 @@ export default function SubjectsPage() {
               setEditingSubject(undefined)
               setSubjectModalOpen(true)
             }}
-            className="flex items-center gap-1.5 rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600"
           >
             <Plus className="h-4 w-4" />
             Add Subject

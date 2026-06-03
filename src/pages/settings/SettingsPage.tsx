@@ -82,7 +82,7 @@ export default function SettingsPage() {
   if (loading) return <LoadingSpinner />
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="space-y-6">
       <PageHeader title="Settings" description="Manage your profile, preferences, and data" />
 
       {/* Profile */}

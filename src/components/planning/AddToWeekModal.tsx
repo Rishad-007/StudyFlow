@@ -88,22 +88,23 @@ export function AddToWeekModal({
               ))}
             </select>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Chapter</label>
-            <select
-              value={chapterId}
-              onChange={(e) => setChapterId(e.target.value)}
-              disabled={!subjectId}
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 disabled:opacity-50"
-            >
-              <option value="">Select a chapter</option>
-              {filteredChapters.map((ch) => (
-                <option key={ch.id} value={ch.id}>
-                  {ch.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          {subjectId && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Chapter</label>
+              <select
+                value={chapterId}
+                onChange={(e) => setChapterId(e.target.value)}
+                className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-indigo-500"
+              >
+                <option value="">Select a chapter</option>
+                {filteredChapters.map((ch) => (
+                  <option key={ch.id} value={ch.id}>
+                    {ch.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
         <div className="mt-6 flex justify-end gap-3">
           <button

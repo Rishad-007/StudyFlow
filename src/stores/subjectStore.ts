@@ -20,7 +20,7 @@ interface SubjectState {
 export const useSubjectStore = create<SubjectState>((set) => ({
   subjects: [],
   chapters: [],
-  loading: true,
+  loading: false,
 
   fetchSubjects: async () => {
     const user = useAuthStore.getState().user

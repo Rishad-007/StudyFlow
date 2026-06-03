@@ -37,7 +37,7 @@ export function SubjectCard({
         onClick={() => setExpanded(!expanded)}
       >
         <div
-          className="w-1 shrink-0"
+          className="w-2 shrink-0 rounded-l-xl"
           style={{ backgroundColor: subject.color }}
         />
         <div className="flex flex-1 items-center gap-4 px-4 py-4">

@@ -27,13 +27,15 @@ export function QuickTodo({ todos, onAdd, onToggle, onDelete, sessionId, onLinkT
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white">
+    <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="flex w-full items-center gap-2 px-4 py-3 text-sm font-semibold text-gray-700"
+        className="flex w-full items-center gap-3 px-4 py-3"
       >
-        <ListTodo className="h-4 w-4 text-indigo-500" />
-        <span>Todo ({pending.length})</span>
+        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50">
+          <ListTodo className="h-4 w-4 text-indigo-500" />
+        </span>
+        <span className="text-sm font-semibold text-gray-700">Todo ({pending.length})</span>
         {collapsed ? <ChevronRight className="ml-auto h-4 w-4 text-gray-400" /> : <ChevronDown className="ml-auto h-4 w-4 text-gray-400" />}
       </button>
 

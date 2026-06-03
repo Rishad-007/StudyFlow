@@ -68,7 +68,7 @@ export default function DashboardPage() {
   const displayName = user?.user_metadata?.full_name ?? user?.email?.split('@')[0] ?? 'there'
 
   if (loading) return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="space-y-6">
       <SkeletonCard />
       <div className="grid gap-4 md:grid-cols-2">
         <SkeletonCard />
@@ -78,18 +78,18 @@ export default function DashboardPage() {
   )
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      {/* Welcome */}
+    <div className="space-y-8">
+      {/* Zone 1: Welcome + Status */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900">
           {greeting}, {displayName}!
         </h1>
-        <p className="mt-1 text-sm text-gray-500">Let's make today productive.</p>
+        <p className="mt-1.5 text-base text-gray-500">Let's make today productive.</p>
       </div>
 
-      {/* Top Row */}
+      {/* Status Row */}
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="flex items-center justify-center rounded-xl border border-gray-200 bg-white p-6">
+        <div className="flex items-center justify-center rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
           <DailyProgressRing
             achievedMinutes={todayTarget?.achieved_minutes ?? 0}
             targetMinutes={todayTarget?.target_minutes ?? 120}
@@ -100,21 +100,19 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Middle Row */}
+      {/* Zone 2: Action Row */}
       <div className="grid gap-4 md:grid-cols-2">
         <QuickStartTimer recentSubjects={recentQuickStart} />
         <TodaysPlans plans={enrichedPlans} />
       </div>
 
-      {/* Habit Tracker */}
-      <div className="grid gap-4 md:grid-cols-2">
+      {/* Zone 3: Review Row */}
+      <div className="grid gap-4 lg:grid-cols-2">
         <HabitSection />
-        <MotivationalQuote />
-      </div>
-
-      {/* Bottom Row */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <RecentSessions sessions={recentSessions} subjectNames={subjectNames} />
+        <div className="flex flex-col gap-4">
+          <RecentSessions sessions={recentSessions} subjectNames={subjectNames} />
+          <MotivationalQuote />
+        </div>
       </div>
     </div>
   )

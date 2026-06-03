@@ -62,12 +62,12 @@ export default function AnalyticsPage() {
   if (loading) return <LoadingSpinner />
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="space-y-6">
       <PageHeader title="Analytics" description="Track your study patterns and progress" />
 
       {/* Period Selector & Date Nav */}
       <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex overflow-hidden rounded-lg border border-gray-200">
+        <div className="flex overflow-hidden rounded-lg border border-gray-200 shadow-sm">
           {periods.map((p) => (
             <button
               key={p}
@@ -102,20 +102,20 @@ export default function AnalyticsPage() {
 
       {/* Charts Row */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <h3 className="mb-2 text-sm font-semibold text-gray-700">Time by Subject</h3>
+        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h3 className="mb-3 text-sm font-semibold text-gray-700">Time by Subject</h3>
           <SubjectPieChart data={subjectTimeDistribution} />
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <h3 className="mb-2 text-sm font-semibold text-gray-700">Daily Study Time</h3>
+        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h3 className="mb-3 text-sm font-semibold text-gray-700">Daily Study Time</h3>
           <DailyBarChart data={dailyTotals} />
         </div>
       </div>
 
       {/* Chapter Progress */}
-      <div className="rounded-xl border border-gray-200 bg-white p-4">
-        <h3 className="mb-2 text-sm font-semibold text-gray-700">Chapter Progress</h3>
+      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+        <h3 className="mb-3 text-sm font-semibold text-gray-700">Chapter Progress</h3>
         <ChapterProgressChart data={chapterProgress} subjectColors={subjectColors} />
       </div>
 

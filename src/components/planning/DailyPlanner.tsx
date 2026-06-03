@@ -72,7 +72,7 @@ export function DailyPlanner() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-gray-200 bg-white p-4">
+      <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
         <h2 className="text-sm font-semibold text-gray-700">
           {format(parseISO(selectedDate), 'EEEE, MMMM d, yyyy')}
         </h2>
@@ -85,59 +85,69 @@ export function DailyPlanner() {
       ) : (
         <>
           {Object.entries(chaptersBySubject).map(([subjectId, chs]) => (
-            <div key={subjectId} className="rounded-lg border border-gray-200 bg-white">
-              <div className="border-b border-gray-100 px-4 py-2">
-                <span className="text-sm font-semibold text-gray-700">{chs[0].subjectName}</span>
+            <div key={subjectId} className="rounded-xl border border-gray-200 bg-white shadow-sm">
+              <div className="border-b border-gray-100 px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="h-3 w-3 rounded-full"
+                    style={{ backgroundColor: hexColor(chs[0].subjectColor) }}
+                  />
+                  <span className="text-sm font-semibold text-gray-700">{chs[0].subjectName}</span>
+                </div>
               </div>
               <div className="divide-y divide-gray-50">
                 {chs.map((ch) => {
                   const plan = planMap[ch.id]
                   return (
-                    <div key={ch.id} className="flex items-center gap-3 px-4 py-3">
-                      <div
-                        className="h-2.5 w-2.5 shrink-0 rounded-full"
-                        style={{ backgroundColor: hexColor(ch.subjectColor) }}
-                      />
-                      <span className="flex-1 text-sm text-gray-800">{ch.name}</span>
-                      <input
-                        type="number"
-                        min={0}
-                        inputMode="numeric"
-                        className="w-16 rounded border border-gray-200 px-2 py-1 text-center text-xs outline-none focus:border-indigo-500"
-                        placeholder="min"
-                        value={plan?.planned ?? ''}
-                        onChange={async (e) => {
-                          const val = Number(e.target.value)
-                          if (!isNaN(val)) await setDailyPlan(ch.id, val)
-                        }}
-                      />
-                      <input
-                        type="number"
-                        min={0}
-                        inputMode="numeric"
-                        className="w-16 rounded border border-gray-200 px-2 py-1 text-center text-xs outline-none focus:border-indigo-500"
-                        placeholder="min"
-                        value={plan?.actual ?? ''}
-                        onChange={async (e) => {
-                          const val = Number(e.target.value)
-                          if (!isNaN(val) && plan?.id) await updateDailyPlanActual(plan.id, val)
-                        }}
-                      />
-                      <div className="flex items-center gap-0.5">
-                        {(['not_started', 'partial', 'done'] as const).map((st) => (
-                          <button
-                            key={st}
-                            onClick={async () => {
-                              if (plan?.id) await updateDailyPlanStatus(plan.id, st)
+                    <div key={ch.id} className="flex flex-wrap items-center gap-2 px-4 py-3 sm:flex-nowrap sm:gap-3">
+                      <span className="flex-1 text-sm text-gray-800 min-w-[100px]">{ch.name}</span>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-gray-400 w-10">Plan</span>
+                          <input
+                            type="number"
+                            min={0}
+                            inputMode="numeric"
+                            className="w-16 rounded-lg border border-gray-200 px-2 py-1.5 text-center text-xs outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                            placeholder="min"
+                            value={plan?.planned ?? ''}
+                            onChange={async (e) => {
+                              const val = Number(e.target.value)
+                              if (!isNaN(val)) await setDailyPlan(ch.id, val)
                             }}
-                            className={`rounded-lg p-2 transition-colors ${
-                              plan?.status === st ? 'opacity-100' : 'opacity-40 hover:opacity-70'
-                            }`}
-                            title={st.replace('_', ' ')}
-                          >
-                            {statusIcon(st)}
-                          </button>
-                        ))}
+                          />
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-gray-400 w-10">Actual</span>
+                          <input
+                            type="number"
+                            min={0}
+                            inputMode="numeric"
+                            className="w-16 rounded-lg border border-gray-200 px-2 py-1.5 text-center text-xs outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                            placeholder="min"
+                            value={plan?.actual ?? ''}
+                            onChange={async (e) => {
+                              const val = Number(e.target.value)
+                              if (!isNaN(val) && plan?.id) await updateDailyPlanActual(plan.id, val)
+                            }}
+                          />
+                        </div>
+                        <div className="flex items-center gap-0.5 ml-1">
+                          {(['not_started', 'partial', 'done'] as const).map((st) => (
+                            <button
+                              key={st}
+                              onClick={async () => {
+                                if (plan?.id) await updateDailyPlanStatus(plan.id, st)
+                              }}
+                              className={`rounded-lg p-1.5 transition-colors ${
+                                plan?.status === st ? 'opacity-100' : 'opacity-40 hover:opacity-70'
+                              }`}
+                              title={st.replace('_', ' ')}
+                            >
+                              {statusIcon(st)}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   )
@@ -156,7 +166,7 @@ export function DailyPlanner() {
               await updateDailyPlanStatus(p.id, 'done')
             }
           }}
-          className="w-full rounded-lg border border-gray-200 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50"
+          className="w-full rounded-lg border border-gray-200 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
         >
           Mark all as done
         </button>

@@ -26,21 +26,23 @@ export function Sidebar() {
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-gray-200 bg-white md:flex">
-      <div className="flex items-center gap-2 px-6 py-5">
-        <BookOpenIcon className="h-6 w-6 text-indigo-500" />
-        <span className="text-lg font-bold text-gray-900">StudyFlow</span>
+      <div className="flex items-center gap-3 px-6 pt-6 pb-4">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-500">
+          <BookOpenIcon className="h-5 w-5 text-white" />
+        </div>
+        <span className="text-xl font-bold tracking-tight text-gray-900">StudyFlow</span>
       </div>
 
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="flex-1 space-y-0.5 px-3 py-2">
         {navItems.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
                 isActive
-                  ? 'bg-indigo-50 text-indigo-600'
+                  ? 'bg-indigo-50 text-indigo-700 border-l-4 border-l-indigo-500 rounded-l-none'
                   : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
               )
             }
@@ -53,7 +55,7 @@ export function Sidebar() {
 
       <div className="border-t border-gray-200 px-4 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-sm font-medium text-indigo-600">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-sm font-medium text-indigo-600 ring-2 ring-indigo-100">
             {user?.email?.charAt(0).toUpperCase()}
           </div>
           <div className="flex-1 truncate text-sm text-gray-700">

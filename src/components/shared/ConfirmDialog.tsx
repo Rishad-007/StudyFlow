@@ -42,7 +42,7 @@ export function ConfirmDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center">
-      <div className="w-full rounded-t-xl bg-white p-6 shadow-xl sm:mx-auto sm:max-w-sm sm:rounded-xl" role="dialog" aria-modal="true">
+      <div className="w-full rounded-t-xl bg-white p-6 shadow-2xl sm:mx-auto sm:max-w-sm sm:rounded-xl" role="dialog" aria-modal="true">
         <div className="mb-4 flex items-start justify-between">
           <div className="flex items-center gap-3">
             {variant === 'danger' && <AlertTriangle className="h-5 w-5 text-red-500" />}

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
-import { Timer, Coffee } from 'lucide-react'
+import { useSubjectStore } from '@/stores/subjectStore'
+import { Timer, Coffee, Target } from 'lucide-react'
 import type { StudySession } from '@/types'
 
 interface RecentSessionsProps {
@@ -26,35 +27,52 @@ function formatDuration(seconds: number): string {
 
 export function RecentSessions({ sessions, subjectNames }: RecentSessionsProps) {
   const navigate = useNavigate()
+  const subjects = useSubjectStore((s) => s.subjects)
+
+  const subjectColor = (id: string | null) => subjects.find((s) => s.id === id)?.color ?? '#6366f1'
 
   if (sessions.length === 0) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-4">
-        <h3 className="mb-2 text-sm font-semibold text-gray-700">Recent Sessions</h3>
-        <p className="text-sm text-gray-400">No sessions yet. Start studying!</p>
+      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+        <h3 className="mb-2 text-base font-semibold text-gray-900">Recent Sessions</h3>
+        <div className="flex flex-col items-center py-4 text-center">
+          <Target className="mb-2 h-8 w-8 text-gray-300" />
+          <p className="text-sm text-gray-400">No sessions yet.</p>
+          <button
+            onClick={() => navigate('/timer')}
+            className="mt-2 text-sm font-medium text-indigo-600 hover:text-indigo-700"
+          >
+            Start studying
+          </button>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4">
-      <h3 className="mb-3 text-sm font-semibold text-gray-700">Recent Sessions</h3>
-      <div className="space-y-2">
+    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <h3 className="mb-3 text-base font-semibold text-gray-900">Recent Sessions</h3>
+      <div className="space-y-1.5">
         {sessions.map((session) => {
           const Icon = session.session_type === 'pomodoro' ? Coffee : Timer
           return (
             <button
               key={session.id}
               onClick={() => navigate('/analytics')}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-3 hover:bg-gray-50"
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-gray-50"
             >
-              <Icon className="h-4 w-4 text-indigo-400" />
-              <span className="flex-1 text-left text-sm text-gray-700">
+              <div
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+                style={{ backgroundColor: `${subjectColor(session.subject_id)}15` }}
+              >
+                <Icon className="h-4 w-4" style={{ color: subjectColor(session.subject_id) }} />
+              </div>
+              <span className="flex-1 text-left text-sm font-medium text-gray-700">
                 {session.subject_id
                   ? subjectNames[session.subject_id] ?? 'Unknown'
                   : 'No subject'}
               </span>
-              <span className="text-xs text-gray-400">
+              <span className="text-sm font-medium text-gray-900">
                 {session.duration_seconds ? formatDuration(session.duration_seconds) : '—'}
               </span>
               <span className="text-xs text-gray-400">

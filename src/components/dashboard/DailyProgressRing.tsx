@@ -9,7 +9,7 @@ interface DailyProgressRingProps {
 export function DailyProgressRing({
   achievedMinutes,
   targetMinutes,
-  size = 180,
+  size = 220,
 }: DailyProgressRingProps) {
   const pct = targetMinutes > 0 ? Math.min(achievedMinutes / targetMinutes, 1) : 0
   const radius = 72
@@ -28,18 +28,18 @@ export function DailyProgressRing({
 
   const sub =
     targetMinutes > 0
-      ? `${achievedMinutes}m / ${targetMinutes}m`
+      ? `${achievedMinutes}m of ${targetMinutes}m goal`
       : 'No target set'
 
   return (
     <div className="relative flex items-center justify-center">
-      <svg width={size} height={size}>
+      <svg width={size} height={size} className="drop-shadow-sm">
         <circle
           cx={center}
           cy={center}
           r={radius}
           fill="none"
-          className="stroke-gray-200"
+          className="stroke-gray-100"
           strokeWidth={strokeWidth}
         />
         <circle
@@ -56,8 +56,8 @@ export function DailyProgressRing({
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="text-3xl font-bold text-gray-900">{display}</span>
-        <span className="mt-0.5 text-xs text-gray-500">{sub}</span>
+        <span className="text-4xl font-bold text-gray-900">{display}</span>
+        <span className="mt-1 text-xs text-gray-500">{sub}</span>
       </div>
     </div>
   )

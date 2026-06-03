@@ -81,7 +81,7 @@ export function WeeklyPlanner() {
       </div>
 
       <div className="overflow-x-auto pb-2">
-        <div className="grid min-w-[560px] grid-cols-7 gap-2 sm:min-w-0">
+        <div className="grid min-w-[700px] grid-cols-7 gap-3 sm:min-w-0">
           {days.map((day, i) => {
             const dayStr = format(day, 'yyyy-MM-dd')
             return (
