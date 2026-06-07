@@ -1,27 +1,37 @@
 import { useState, useEffect, useRef } from 'react'
 import { X } from 'lucide-react'
-import { ColorPicker } from '@/components/shared/ColorPicker'
+import { ColorPicker, COLORS } from '@/components/shared/ColorPicker'
+
+function findUnusedColor(existingColors: string[]): string {
+  const lower = existingColors.map((c) => c.toLowerCase())
+  const available = COLORS.filter((c) => !lower.includes(c.toLowerCase()))
+  if (available.length > 0) {
+    return available[Math.floor(Math.random() * available.length)]
+  }
+  return '#6366f1'
+}
 
 interface AddSubjectModalProps {
   open: boolean
   onClose: () => void
   onSave: (name: string, color: string) => Promise<void>
   initial?: { name: string; color: string }
+  existingColors?: string[]
 }
 
-export function AddSubjectModal({ open, onClose, onSave, initial }: AddSubjectModalProps) {
+export function AddSubjectModal({ open, onClose, onSave, initial, existingColors = [] }: AddSubjectModalProps) {
   const [name, setName] = useState(initial?.name ?? '')
-  const [color, setColor] = useState(initial?.color ?? '#6366f1')
+  const [color, setColor] = useState(initial?.color ?? findUnusedColor(existingColors))
   const [saving, setSaving] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (open) {
       setName(initial?.name ?? '')
-      setColor(initial?.color ?? '#6366f1')
+      setColor(initial?.color ?? findUnusedColor(existingColors))
       setTimeout(() => inputRef.current?.focus(), 100)
     }
-  }, [open, initial])
+  }, [open, initial, existingColors])
 
   if (!open) return null
 

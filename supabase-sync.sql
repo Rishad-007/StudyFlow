@@ -1,6 +1,6 @@
 -- ============================================================================
--- StudyFlow - Complete Database Schema
--- Run this in your Supabase SQL Editor
+-- StudyFlow - Schema Sync & Fix Script
+-- Run this in your Supabase SQL Editor (disable "limit 100" / use "No limit")
 -- ============================================================================
 
 -- ----------------------------------------------------------------------------
@@ -8,9 +8,8 @@
 -- ----------------------------------------------------------------------------
 create extension if not exists "uuid-ossp";
 
-
 -- ----------------------------------------------------------------------------
--- 1. TABLES
+-- 1. Ensure all tables exist with correct columns
 -- ----------------------------------------------------------------------------
 
 -- 1.1 profiles
@@ -67,7 +66,7 @@ create table if not exists daily_targets (
   unique(user_id, target_date)
 );
 
--- 1.6 daily_plans
+-- 1.6 daily_plans  ← THIS IS THE TABLE WITH THE ISSUE
 create table if not exists daily_plans (
   id uuid primary key default uuid_generate_v4(),
   user_id uuid not null references profiles(id) on delete cascade,
@@ -151,11 +150,13 @@ begin
 end;
 $$;
 
+drop trigger if exists set_updated_at_chapters on chapters;
 create trigger set_updated_at_chapters
   before update on chapters
   for each row
   execute function update_updated_at_column();
 
+drop trigger if exists set_updated_at_user_settings on user_settings;
 create trigger set_updated_at_user_settings
   before update on user_settings
   for each row
@@ -182,10 +183,11 @@ begin
 end;
 $$;
 
--- Standard policies for tables with a user_id column
+-- Drop and recreate policies to ensure they exist
 do $$
 declare
   tbl text;
+  pol text;
 begin
   foreach tbl in array array[
     'subjects', 'chapters', 'study_sessions',
@@ -193,6 +195,10 @@ begin
     'user_settings', 'habits', 'session_notes'
   ]
   loop
+    foreach pol in array array['select', 'insert', 'update', 'delete']
+    loop
+      execute format('drop policy if exists "Users can %s own data" on %I;', pol, tbl);
+    end loop;
     execute format(
       'create policy "Users can view own data" on %I for select using (auth.uid() = user_id);',
       tbl
@@ -213,7 +219,12 @@ begin
 end;
 $$;
 
--- Profiles table uses id = auth.uid() instead of user_id column
+-- Profiles table policies
+drop policy if exists "Users can view own profile" on profiles;
+drop policy if exists "Users can insert own profile" on profiles;
+drop policy if exists "Users can update own profile" on profiles;
+drop policy if exists "Users can delete own profile" on profiles;
+
 create policy "Users can view own profile" on profiles
   for select using (auth.uid() = id);
 
@@ -231,7 +242,6 @@ create policy "Users can delete own profile" on profiles
 -- 5. HELPER FUNCTIONS
 -- ----------------------------------------------------------------------------
 
--- Returns the current study streak (consecutive days where >= 50% of target was met)
 create or replace function get_streak(p_user_id uuid)
 returns int
 language plpgsql
@@ -254,3 +264,16 @@ begin
   return current_streak;
 end;
 $$;
+
+
+-- ----------------------------------------------------------------------------
+-- 6. REFRESH POSTGREST SCHEMA CACHE (FIXES PGRST204 ERRORS)
+-- ----------------------------------------------------------------------------
+-- This is the KEY fix for the "Could not find the 'subject_id' column" error.
+-- PostgREST caches table metadata; after schema changes you must notify it.
+
+-- Method A: Notify PostgREST to reload schema cache
+NOTIFY pgrst, 'reload schema';
+
+-- Method B: If Method A doesn't work, uncomment the line below and run separately:
+-- select set_config('pgrst.reload_schema', 'true', false);

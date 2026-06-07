@@ -86,6 +86,7 @@ export default function SubjectsPage() {
       <AddSubjectModal
         open={subjectModalOpen}
         initial={editingSubject ? { name: editingSubject.name, color: editingSubject.color } : undefined}
+        existingColors={subjects.map((s) => s.color)}
         onClose={() => {
           setSubjectModalOpen(false)
           setEditingSubject(undefined)

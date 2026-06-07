@@ -3,7 +3,7 @@ import { CheckCircle, Circle, Minus, Calendar } from 'lucide-react'
 import type { DailyPlan } from '@/types'
 
 interface TodaysPlansProps {
-  plans: (DailyPlan & { chapterName: string; subjectColor: string })[]
+  plans: (DailyPlan & { subjectName: string; subjectColor: string })[]
 }
 
 const STATUS_ICONS = {
@@ -64,7 +64,7 @@ export function TodaysPlans({ plans }: TodaysPlansProps) {
                 style={{ backgroundColor: plan.subjectColor }}
               />
               <span className="flex-1 truncate text-sm text-gray-700">
-                {plan.chapterName}
+                {plan.subjectName}
               </span>
               <span className="text-xs text-gray-400">
                 {Math.round(plan.actual_minutes / 60)}h{plan.actual_minutes % 60}m

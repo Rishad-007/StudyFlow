@@ -145,7 +145,7 @@ export interface Database {
           id: string
           user_id: string
           plan_date: string
-          chapter_id: string
+          subject_id: string
           planned_minutes: number
           actual_minutes: number
           status: 'not_started' | 'partial' | 'done'
@@ -154,7 +154,7 @@ export interface Database {
           id?: string
           user_id: string
           plan_date: string
-          chapter_id: string
+          subject_id: string
           planned_minutes?: number
           actual_minutes?: number
           status?: 'not_started' | 'partial' | 'done'
@@ -163,7 +163,7 @@ export interface Database {
           id?: string
           user_id?: string
           plan_date?: string
-          chapter_id?: string
+          subject_id?: string
           planned_minutes?: number
           actual_minutes?: number
           status?: 'not_started' | 'partial' | 'done'
@@ -175,21 +175,21 @@ export interface Database {
           user_id: string
           week_start: string
           day_of_week: number
-          chapter_id: string
+          subject_id: string
         }
         Insert: {
           id?: string
           user_id: string
           week_start: string
           day_of_week: number
-          chapter_id: string
+          subject_id: string
         }
         Update: {
           id?: string
           user_id?: string
           week_start?: string
           day_of_week?: number
-          chapter_id?: string
+          subject_id?: string
         }
       }
       user_settings: {

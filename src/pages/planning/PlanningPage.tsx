@@ -1,70 +1,43 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { usePlanStore } from '@/stores/planStore'
 import { useSubjects } from '@/hooks/useSubjects'
-import { WeeklyPlanner } from '@/components/planning/WeeklyPlanner'
-import { DailyPlanner } from '@/components/planning/DailyPlanner'
+import { MonthCalendar } from '@/components/planning/MonthCalendar'
+import { DayPlanModal } from '@/components/planning/DayPlanModal'
 import { PageHeader } from '@/components/shared/PageHeader'
-import { cn } from '@/lib/utils'
 
 export default function PlanningPage() {
   useSubjects()
 
-  const selectedDate = usePlanStore((s) => s.selectedDate)
-  const setSelectedDate = usePlanStore((s) => s.setSelectedDate)
-  const fetchDailyPlan = usePlanStore((s) => s.fetchDailyPlan)
-  const [tab, setTab] = useState<'weekly' | 'daily'>('weekly')
+  const selectedMonth = usePlanStore((s) => s.selectedMonth)
+  const selectedYear = usePlanStore((s) => s.selectedYear)
+  const fetchPlansForMonth = usePlanStore((s) => s.fetchPlansForMonth)
+
+  const [modalDate, setModalDate] = useState<string | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
 
   useEffect(() => {
-    if (tab === 'daily') {
-      fetchDailyPlan(selectedDate)
-    }
-  }, [tab, selectedDate])
+    fetchPlansForMonth(selectedYear, selectedMonth)
+  }, [selectedYear, selectedMonth])
+
+  const handleDateSelect = useCallback((dateStr: string) => {
+    usePlanStore.getState().setSelectedDate(dateStr)
+    setModalDate(dateStr)
+    setModalOpen(true)
+  }, [])
 
   return (
     <div>
-      <PageHeader title="Plan" description="Plan your study sessions" />
+      <PageHeader title="Plan" description="View and manage your monthly study calendar" />
 
-      {/* Tab Switcher */}
-      <div className="mt-6 mb-6 flex overflow-hidden rounded-lg border border-gray-200 shadow-sm w-fit">
-        <button
-          onClick={() => setTab('weekly')}
-          className={cn(
-            'px-5 py-2 text-sm font-medium transition-colors',
-            tab === 'weekly'
-              ? 'bg-indigo-500 text-white'
-              : 'bg-white text-gray-600 hover:bg-gray-50',
-          )}
-        >
-          Weekly
-        </button>
-        <button
-          onClick={() => setTab('daily')}
-          className={cn(
-            'px-5 py-2 text-sm font-medium transition-colors',
-            tab === 'daily'
-              ? 'bg-indigo-500 text-white'
-              : 'bg-white text-gray-600 hover:bg-gray-50',
-          )}
-        >
-          Daily
-        </button>
+      <div className="mt-6">
+        <MonthCalendar onDateSelect={handleDateSelect} />
       </div>
 
-      {tab === 'weekly' && <WeeklyPlanner />}
-
-      {tab === 'daily' && (
-        <div>
-          <div className="mb-4">
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-indigo-500"
-            />
-          </div>
-          <DailyPlanner />
-        </div>
-      )}
+      <DayPlanModal
+        open={modalOpen}
+        dateStr={modalDate ?? ''}
+        onClose={() => setModalOpen(false)}
+      />
     </div>
   )
 }

@@ -18,7 +18,6 @@ export default function DashboardPage() {
   const { todayTarget, todayPlans, recentSessions, streak, loading, fetchDashboardData } =
     useDashboardStore()
   const subjects = useSubjectStore((s) => s.subjects)
-  const chapters = useSubjectStore((s) => s.chapters)
   const fetchSubjects = useSubjectStore((s) => s.fetchSubjects)
 
   useEffect(() => {
@@ -26,19 +25,18 @@ export default function DashboardPage() {
     if (subjects.length === 0) fetchSubjects()
   }, [])
 
-  // Map chapter IDs to names and subject colors for todayPlans
+  // Map subjects to names and colors for todayPlans
   const enrichedPlans = useMemo(
     () =>
       todayPlans.map((plan) => {
-        const ch = chapters.find((c) => c.id === plan.chapter_id)
-        const sub = subjects.find((s) => s.id === ch?.subject_id)
+        const sub = subjects.find((s) => s.id === plan.subject_id)
         return {
           ...plan,
-          chapterName: ch?.name ?? 'Unknown',
+          subjectName: sub?.name ?? 'Unknown',
           subjectColor: sub?.color ?? '#6366f1',
         }
       }),
-    [todayPlans, chapters, subjects],
+    [todayPlans, subjects],
   )
 
   // Map subject IDs to names for recent sessions
@@ -67,15 +65,16 @@ export default function DashboardPage() {
 
   const displayName = user?.user_metadata?.full_name ?? user?.email?.split('@')[0] ?? 'there'
 
-  if (loading) return (
-    <div className="space-y-6">
-      <SkeletonCard />
-      <div className="grid gap-4 md:grid-cols-2">
+  if (loading)
+    return (
+      <div className="space-y-6">
         <SkeletonCard />
-        <SkeletonCard />
+        <div className="grid gap-4 md:grid-cols-2">
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
       </div>
-    </div>
-  )
+    )
 
   return (
     <div className="space-y-8">

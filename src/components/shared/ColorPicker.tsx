@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
-const COLORS = [
+export const COLORS = [
   '#6366f1', // indigo
   '#10b981', // emerald
   '#f59e0b', // amber
