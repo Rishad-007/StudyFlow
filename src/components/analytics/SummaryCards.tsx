@@ -31,7 +31,7 @@ export function SummaryCards({ totalTime, totalSessions, productiveHour }: Summa
   ]
 
   return (
-    <div className="grid grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
       {cards.map((card) => (
         <div key={card.label} className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-50 to-indigo-100">

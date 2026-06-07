@@ -1,8 +1,9 @@
 import { create } from 'zustand'
 import { supabase } from '@/services/supabase'
 import { useAuthStore } from '@/stores/authStore'
+import { useSubjectStore } from '@/stores/subjectStore'
 import { startOfWeek, endOfWeek, format, startOfMonth, endOfMonth } from 'date-fns'
-import type { StudySession } from '@/types'
+import type { StudySession, DailyTarget } from '@/types'
 import {
   aggregateBySubject,
   aggregateByDate,
@@ -20,6 +21,7 @@ interface AnalyticsState {
   sessions: StudySession[]
   subjectTimeDistribution: SubjectTime[]
   dailyTotals: DailyTotal[]
+  dailyTargets: DailyTarget[]
   chapterProgress: { chapter: string; subject: string; progress: number }[]
   mostProductiveHour: number
   mostProductiveDay: number
@@ -38,6 +40,7 @@ export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
   sessions: [],
   subjectTimeDistribution: [],
   dailyTotals: [],
+  dailyTargets: [],
   chapterProgress: [],
   mostProductiveHour: 9,
   mostProductiveDay: 1,
@@ -73,7 +76,7 @@ export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
       lte = format(end, 'yyyy-MM-dd')
     }
 
-    const [sessionsRes, subjectsRes, chaptersRes] = await Promise.all([
+    const [sessionsRes, targetsRes] = await Promise.all([
       supabase
         .from('study_sessions')
         .select('*')
@@ -82,17 +85,23 @@ export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
         .lte('started_at', `${lte}T23:59:59`)
         .not('ended_at', 'is', null)
         .order('started_at', { ascending: false }),
-      supabase.from('subjects').select('*').eq('user_id', user.id),
-      supabase.from('chapters').select('*').eq('user_id', user.id),
+      supabase
+        .from('daily_targets')
+        .select('*')
+        .eq('user_id', user.id)
+        .gte('target_date', gte)
+        .lte('target_date', lte),
     ])
 
     const sessions = (sessionsRes.data as StudySession[]) ?? []
-    const subjects = (subjectsRes.data as any[]) ?? []
-    const chapters = (chaptersRes.data as any[]) ?? []
+    const dailyTargets = (targetsRes.data as DailyTarget[]) ?? []
 
     const totalTime = Math.round(
       sessions.reduce((sum, s) => sum + (s.duration_seconds ?? 0) / 60, 0),
     )
+
+    const subjects = useSubjectStore.getState().subjects
+    const chapters = useSubjectStore.getState().chapters
 
     const subjectNames: Record<string, string> = {}
     const subjectColors: Record<string, string> = {}
@@ -106,19 +115,23 @@ export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
     const peakHour = findPeakHour(sessions)
     const peakDay = findPeakDay(sessions)
 
-    const chapterProgress = chapters.map((ch: any) => {
-      const sub = subjects.find((s: any) => s.id === ch.subject_id)
-      return {
-        chapter: ch.name,
-        subject: sub?.name ?? 'Unknown',
-        progress: ch.progress_pct,
-      }
-    })
+    const sessionChapterIds = new Set(sessions.map((s) => s.chapter_id).filter(Boolean))
+    const chapterProgress = chapters
+      .filter((ch) => sessionChapterIds.has(ch.id))
+      .map((ch) => {
+        const sub = subjects.find((s) => s.id === ch.subject_id)
+        return {
+          chapter: ch.name,
+          subject: sub?.name ?? 'Unknown',
+          progress: ch.progress_pct,
+        }
+      })
 
     set({
       sessions,
       subjectTimeDistribution,
       dailyTotals,
+      dailyTargets,
       chapterProgress,
       mostProductiveHour: peakHour,
       mostProductiveDay: peakDay,

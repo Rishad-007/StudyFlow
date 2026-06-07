@@ -6,6 +6,8 @@ import { DateNavigator, navigateDate } from '@/components/shared/DateNavigator'
 import { SummaryCards } from '@/components/analytics/SummaryCards'
 import { SubjectPieChart } from '@/components/analytics/SubjectPieChart'
 import { DailyBarChart } from '@/components/analytics/DailyBarChart'
+import { ActivityHeatmap } from '@/components/analytics/ActivityHeatmap'
+import { StreakCard } from '@/components/analytics/StreakCard'
 import { ChapterProgressChart } from '@/components/analytics/ChapterProgressChart'
 import { SessionsTable } from '@/components/analytics/SessionsTable'
 import { ProductiveTimeCard } from '@/components/analytics/ProductiveTimeCard'
@@ -23,6 +25,7 @@ export default function AnalyticsPage() {
   const sessions = useAnalyticsStore((s) => s.sessions)
   const subjectTimeDistribution = useAnalyticsStore((s) => s.subjectTimeDistribution)
   const dailyTotals = useAnalyticsStore((s) => s.dailyTotals)
+  const dailyTargets = useAnalyticsStore((s) => s.dailyTargets)
   const chapterProgress = useAnalyticsStore((s) => s.chapterProgress)
   const mostProductiveHour = useAnalyticsStore((s) => s.mostProductiveHour)
   const mostProductiveDay = useAnalyticsStore((s) => s.mostProductiveDay)
@@ -100,6 +103,9 @@ export default function AnalyticsPage() {
         productiveHour={mostProductiveHour}
       />
 
+      {/* Streak Card */}
+      <StreakCard dailyTargets={dailyTargets} />
+
       {/* Charts Row */}
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -108,21 +114,29 @@ export default function AnalyticsPage() {
         </div>
 
         <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-          <h3 className="mb-3 text-sm font-semibold text-gray-700">Daily Study Time</h3>
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-gray-700">Daily Study Time</h3>
+          </div>
           <DailyBarChart data={dailyTotals} />
+          <div className="mt-3">
+            <ActivityHeatmap data={dailyTotals} />
+          </div>
         </div>
       </div>
 
-      {/* Chapter Progress */}
+      {/* Subject Progress */}
       <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-        <h3 className="mb-3 text-sm font-semibold text-gray-700">Chapter Progress</h3>
+        <h3 className="mb-3 text-sm font-semibold text-gray-700">Subject Progress</h3>
         <ChapterProgressChart data={chapterProgress} subjectColors={subjectColors} />
       </div>
 
       {/* Insights + Sessions */}
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-1">
-          <ProductiveTimeCard productiveHour={mostProductiveHour} productiveDay={mostProductiveDay} />
+          <ProductiveTimeCard
+            productiveHour={mostProductiveHour}
+            productiveDay={mostProductiveDay}
+          />
         </div>
         <div className="lg:col-span-2">
           <SessionsTable

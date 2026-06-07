@@ -1,5 +1,7 @@
+import { memo, useMemo } from 'react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 import type { SubjectTime } from '@/utils/analytics'
+import { generateUniqueColors } from '@/utils/colors'
 
 interface SubjectPieChartProps {
   data: SubjectTime[]
@@ -13,14 +15,14 @@ function CustomTooltip({ active, payload }: any) {
       <div className="text-sm font-medium" style={{ color: item.color }}>
         {item.subject}
       </div>
-      <div className="text-xs text-gray-500">
-        {Math.round(item.minutes)}m
-      </div>
+      <div className="text-xs text-gray-500">{Math.round(item.minutes)}m</div>
     </div>
   )
 }
 
-export function SubjectPieChart({ data }: SubjectPieChartProps) {
+export const SubjectPieChart = memo(function SubjectPieChart({ data }: SubjectPieChartProps) {
+  const fallbackColors = useMemo(() => generateUniqueColors(data.length), [data.length])
+
   if (data.length === 0) {
     return (
       <div className="flex h-[250px] items-center justify-center text-sm text-gray-400">
@@ -44,17 +46,15 @@ export function SubjectPieChart({ data }: SubjectPieChartProps) {
             paddingAngle={2}
           >
             {data.map((entry, i) => (
-              <Cell key={i} fill={entry.color} />
+              <Cell key={i} fill={entry.color || fallbackColors[i]} />
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />
           <Legend
-            formatter={(value: string) => (
-              <span className="text-xs text-gray-600">{value}</span>
-            )}
+            formatter={(value: string) => <span className="text-xs text-gray-600">{value}</span>}
           />
         </PieChart>
       </ResponsiveContainer>
     </div>
   )
-}
+})
