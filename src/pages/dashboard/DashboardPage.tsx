@@ -11,6 +11,7 @@ import { RecentSessions } from '@/components/dashboard/RecentSessions'
 import { MotivationalQuote } from '@/components/dashboard/MotivationalQuote'
 import { HabitSection } from '@/pages/dashboard/HabitSection'
 import { SkeletonCard } from '@/components/shared/Skeleton'
+import { PWAInstallButton } from '@/components/shared/PWAInstallButton'
 
 export default function DashboardPage() {
   const { user } = useAuth()
@@ -79,11 +80,14 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* Zone 1: Welcome + Status */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-          {greeting}, {displayName}!
-        </h1>
-        <p className="mt-1.5 text-base text-gray-500">Let's make today productive.</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+            {greeting}, {displayName}!
+          </h1>
+          <p className="mt-1.5 text-base text-gray-500">Let's make today productive.</p>
+        </div>
+        <PWAInstallButton />
       </div>
 
       {/* Status Row */}

@@ -106,6 +106,8 @@ npx tsc -b           # Stricter build-mode check
 3. Add environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
 4. For Netlify/Cloudflare: add a `public/_redirects` file with `/* /index.html 200`
 
-## License
+## Live site
+
+[Live demo](https://study-flow-daily.vercel.app/) — click here to see the site live.
 
 MIT
