@@ -3,12 +3,12 @@ import { useSubjectStore } from '@/stores/subjectStore'
 
 export function useSubjects() {
   const store = useSubjectStore()
-  const subjects = useSubjectStore((s) => s.subjects)
+  const fetched = useSubjectStore((s) => s.fetched)
   const loading = useSubjectStore((s) => s.loading)
   const fetchSubjects = useSubjectStore((s) => s.fetchSubjects)
 
   useEffect(() => {
-    if (subjects.length === 0 && !loading) {
+    if (!fetched && !loading) {
       fetchSubjects()
     }
   }, [])

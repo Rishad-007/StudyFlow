@@ -76,7 +76,7 @@ export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
       lte = format(end, 'yyyy-MM-dd')
     }
 
-    const [sessionsRes, targetsRes] = await Promise.all([
+    const [sessionsRes, allTargetsRes] = await Promise.all([
       supabase
         .from('study_sessions')
         .select('*')
@@ -89,19 +89,18 @@ export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
         .from('daily_targets')
         .select('*')
         .eq('user_id', user.id)
-        .gte('target_date', gte)
-        .lte('target_date', lte),
+        .order('target_date', { ascending: false })
+        .limit(365),
     ])
 
     const sessions = (sessionsRes.data as StudySession[]) ?? []
-    const dailyTargets = (targetsRes.data as DailyTarget[]) ?? []
+    const dailyTargets = (allTargetsRes.data as DailyTarget[]) ?? []
 
     const totalTime = Math.round(
       sessions.reduce((sum, s) => sum + (s.duration_seconds ?? 0) / 60, 0),
     )
 
-    const subjects = useSubjectStore.getState().subjects
-    const chapters = useSubjectStore.getState().chapters
+    const { subjects, chapters, fetched } = useSubjectStore.getState()
 
     const subjectNames: Record<string, string> = {}
     const subjectColors: Record<string, string> = {}
@@ -115,17 +114,16 @@ export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
     const peakHour = findPeakHour(sessions)
     const peakDay = findPeakDay(sessions)
 
-    const sessionChapterIds = new Set(sessions.map((s) => s.chapter_id).filter(Boolean))
-    const chapterProgress = chapters
-      .filter((ch) => sessionChapterIds.has(ch.id))
-      .map((ch) => {
-        const sub = subjects.find((s) => s.id === ch.subject_id)
-        return {
-          chapter: ch.name,
-          subject: sub?.name ?? 'Unknown',
-          progress: ch.progress_pct,
-        }
-      })
+    const chapterProgress = fetched
+      ? chapters.map((ch) => {
+          const sub = subjects.find((s) => s.id === ch.subject_id)
+          return {
+            chapter: ch.name,
+            subject: sub?.name ?? 'Unknown',
+            progress: ch.progress_pct,
+          }
+        })
+      : []
 
     set({
       sessions,

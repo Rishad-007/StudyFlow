@@ -25,7 +25,9 @@ export default function SubjectsPage() {
   if (loading && subjects.length === 0) {
     return (
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)}
+        {Array.from({ length: 3 }).map((_, i) => (
+          <SkeletonCard key={i} />
+        ))}
       </div>
     )
   }
@@ -72,11 +74,17 @@ export default function SubjectsPage() {
                 setSubjectModalOpen(true)
               }}
               onDelete={(s) => setDeleteSubjectConfirm(s)}
-              onEditChapter={() => {}}
+              onEditChapter={(ch) => {
+                setSelectedChapter(ch)
+                setCheckpointModalOpen(true)
+              }}
               onDeleteChapter={(ch) => setDeleteChapterConfirm(ch)}
               onUpdateProgress={(ch) => {
                 setSelectedChapter(ch)
                 setCheckpointModalOpen(true)
+              }}
+              onAddChapter={async (subjectId, name) => {
+                await store.addChapter(subjectId, name)
               }}
             />
           ))}
@@ -85,7 +93,9 @@ export default function SubjectsPage() {
 
       <AddSubjectModal
         open={subjectModalOpen}
-        initial={editingSubject ? { name: editingSubject.name, color: editingSubject.color } : undefined}
+        initial={
+          editingSubject ? { name: editingSubject.name, color: editingSubject.color } : undefined
+        }
         existingColors={subjects.map((s) => s.color)}
         onClose={() => {
           setSubjectModalOpen(false)

@@ -86,15 +86,14 @@ export function findPeakDay(sessions: StudySession[]): number {
 }
 
 export function calculateStreak(dailyTargets: DailyTarget[]): number {
+  const dateSet = new Set(dailyTargets.map((t) => t.target_date))
   let streak = 0
-  const today = new Date()
-  for (let i = 0; i < 365; i++) {
-    const d = new Date(today)
-    d.setDate(d.getDate() - i)
+  const d = new Date()
+  while (true) {
     const dateStr = d.toISOString().split('T')[0]
-    const target = dailyTargets.find((t) => t.target_date === dateStr)
-    if (target && target.achieved_minutes >= target.target_minutes * 0.5) {
+    if (dateSet.has(dateStr)) {
       streak++
+      d.setDate(d.getDate() - 1)
     } else {
       break
     }

@@ -8,10 +8,12 @@ interface SubjectState {
   subjects: Subject[]
   chapters: Chapter[]
   loading: boolean
+  fetched: boolean
   fetchSubjects: () => Promise<void>
   addSubject: (name: string, color: string) => Promise<void>
   updateSubject: (id: string, data: Partial<Subject>) => Promise<void>
   deleteSubject: (id: string) => Promise<void>
+  addChapter: (subjectId: string, name: string) => Promise<void>
   updateChapter: (id: string, data: Partial<Chapter>) => Promise<void>
   deleteChapter: (id: string) => Promise<void>
   updateChapterProgress: (id: string, progressPct: number, checkpointText?: string) => Promise<void>
@@ -21,6 +23,7 @@ export const useSubjectStore = create<SubjectState>((set) => ({
   subjects: [],
   chapters: [],
   loading: false,
+  fetched: false,
 
   fetchSubjects: async () => {
     const user = useAuthStore.getState().user
@@ -34,10 +37,7 @@ export const useSubjectStore = create<SubjectState>((set) => ({
         .select('*')
         .eq('user_id', user.id)
         .order('sort_order', { ascending: true }),
-      supabase
-        .from('chapters')
-        .select('*')
-        .eq('user_id', user.id),
+      supabase.from('chapters').select('*').eq('user_id', user.id),
     ])
 
     if (subjectsRes.error) {
@@ -51,6 +51,7 @@ export const useSubjectStore = create<SubjectState>((set) => ({
       subjects: (subjectsRes.data as Subject[]) ?? [],
       chapters: (chaptersRes.data as Chapter[]) ?? [],
       loading: false,
+      fetched: true,
     })
   },
 
@@ -106,11 +107,42 @@ export const useSubjectStore = create<SubjectState>((set) => ({
     toast.success('Subject deleted')
   },
 
+  addChapter: async (subjectId, name) => {
+    const user = useAuthStore.getState().user
+    if (!user) {
+      toast.error('You must be signed in to add a chapter')
+      return
+    }
+
+    const { data, error } = await supabase
+      .from('chapters')
+      .insert({ subject_id: subjectId, user_id: user.id, name })
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Failed to add chapter:', error)
+      toast.error(error.message)
+      return
+    }
+
+    if (data) {
+      set((s) => ({ chapters: [...s.chapters, data as Chapter] }))
+      toast.success('Chapter added')
+    }
+  },
+
   updateChapter: async (id, data) => {
-    await supabase.from('chapters').update(data).eq('id', id)
+    const { error } = await supabase.from('chapters').update(data).eq('id', id)
+    if (error) {
+      console.error('Failed to update chapter:', error)
+      toast.error(error.message)
+      return
+    }
     set((s) => ({
       chapters: s.chapters.map((ch) => (ch.id === id ? { ...ch, ...data } : ch)),
     }))
+    toast.success('Chapter updated')
   },
 
   deleteChapter: async (id) => {
@@ -130,11 +162,15 @@ export const useSubjectStore = create<SubjectState>((set) => ({
     const payload: Record<string, unknown> = { progress_pct: progressPct }
     if (checkpointText !== undefined) payload.checkpoint_text = checkpointText
 
-    await supabase.from('chapters').update(payload).eq('id', id)
+    const { error } = await supabase.from('chapters').update(payload).eq('id', id)
+    if (error) {
+      console.error('Failed to update chapter progress:', error)
+      toast.error(error.message)
+      return
+    }
     set((s) => ({
-      chapters: s.chapters.map((ch) =>
-        ch.id === id ? { ...ch, ...payload } as Chapter : ch,
-      ),
+      chapters: s.chapters.map((ch) => (ch.id === id ? ({ ...ch, ...payload } as Chapter) : ch)),
     }))
+    toast.success('Progress updated')
   },
 }))

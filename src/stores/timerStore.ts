@@ -116,10 +116,7 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     if (!s.sessionId) return
 
     const now = new Date().toISOString()
-    await supabase
-      .from('study_sessions')
-      .update({ started_at: now })
-      .eq('id', s.sessionId)
+    await supabase.from('study_sessions').update({ started_at: now }).eq('id', s.sessionId)
 
     set({ status: 'running', startTime: now, lastTickAt: now })
   },
@@ -129,6 +126,8 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     if (!s.sessionId) return
 
     const now = new Date().toISOString()
+    const today = now.split('T')[0]
+
     await supabase
       .from('study_sessions')
       .update({
@@ -136,6 +135,46 @@ export const useTimerStore = create<TimerState>((set, get) => ({
         duration_seconds: s.elapsedSeconds,
       })
       .eq('id', s.sessionId)
+
+    // Update today's daily target achieved_minutes for streak calculation
+    const user = useAuthStore.getState().user
+    if (user) {
+      const { data: todaySessions } = await supabase
+        .from('study_sessions')
+        .select('duration_seconds')
+        .eq('user_id', user.id)
+        .gte('started_at', `${today}T00:00:00`)
+        .lte('started_at', `${today}T23:59:59`)
+        .not('ended_at', 'is', null)
+
+      const achieved = Math.round(
+        (todaySessions ?? []).reduce(
+          (sum: number, s: any) => sum + (s.duration_seconds ?? 0) / 60,
+          0,
+        ),
+      )
+
+      const { data: existingTarget } = await supabase
+        .from('daily_targets')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('target_date', today)
+        .maybeSingle()
+
+      if (existingTarget) {
+        await supabase
+          .from('daily_targets')
+          .update({ achieved_minutes: achieved })
+          .eq('id', existingTarget.id)
+      } else {
+        await supabase.from('daily_targets').insert({
+          user_id: user.id,
+          target_date: today,
+          target_minutes: 120,
+          achieved_minutes: achieved,
+        })
+      }
+    }
 
     set({ status: 'idle', sessionId: null, startTime: null, lastTickAt: null })
     localStorage.removeItem(STORAGE_KEY)

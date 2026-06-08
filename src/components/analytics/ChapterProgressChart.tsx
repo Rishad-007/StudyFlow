@@ -1,5 +1,6 @@
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from 'recharts'
+import { generateUniqueColors } from '@/utils/colors'
 
 export interface ChapterProgressItem {
   chapter: string
@@ -16,6 +17,15 @@ export const ChapterProgressChart = memo(function ChapterProgressChart({
   data,
   subjectColors,
 }: ChapterProgressChartProps) {
+  const colors = useMemo(() => {
+    const assigned = data.map((d) => subjectColors[d.subject] ?? '#6366f1')
+    const allSame = assigned.length > 1 && assigned.every((c) => c === assigned[0])
+    if (allSame) {
+      return generateUniqueColors(data.length)
+    }
+    return assigned
+  }, [data, subjectColors])
+
   if (data.length === 0) {
     return (
       <div className="flex h-[200px] items-center justify-center text-sm text-gray-400">
@@ -50,8 +60,8 @@ export const ChapterProgressChart = memo(function ChapterProgressChart({
             width={80}
           />
           <Bar dataKey="progress" radius={[0, 4, 4, 0]} maxBarSize={16}>
-            {sorted.map((entry, i) => (
-              <Cell key={i} fill={subjectColors[entry.subject] ?? '#6366f1'} />
+            {sorted.map((_, i) => (
+              <Cell key={i} fill={colors[i]} />
             ))}
           </Bar>
         </BarChart>

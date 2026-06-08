@@ -6,6 +6,7 @@ import type { StudySession } from '@/types'
 interface RecentSessionsProps {
   sessions: StudySession[]
   subjectNames: Record<string, string>
+  chapterNames?: Record<string, string>
 }
 
 function timeAgo(dateStr: string): string {
@@ -25,7 +26,7 @@ function formatDuration(seconds: number): string {
   return `${m}m`
 }
 
-export function RecentSessions({ sessions, subjectNames }: RecentSessionsProps) {
+export function RecentSessions({ sessions, subjectNames, chapterNames }: RecentSessionsProps) {
   const navigate = useNavigate()
   const subjects = useSubjectStore((s) => s.subjects)
 
@@ -67,10 +68,20 @@ export function RecentSessions({ sessions, subjectNames }: RecentSessionsProps) 
               >
                 <Icon className="h-4 w-4" style={{ color: subjectColor(session.subject_id) }} />
               </div>
-              <span className="flex-1 text-left text-sm font-medium text-gray-700">
-                {session.subject_id
-                  ? (subjectNames[session.subject_id] ?? 'Unknown')
-                  : 'No subject'}
+              <div className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-medium text-gray-700">
+                  {session.subject_id
+                    ? (subjectNames[session.subject_id] ?? 'Unknown')
+                    : 'No subject'}
+                </span>
+                {session.chapter_id && chapterNames?.[session.chapter_id] && (
+                  <span className="block truncate text-xs text-gray-400">
+                    {chapterNames[session.chapter_id]}
+                  </span>
+                )}
+              </div>
+              <span className="text-sm font-semibold text-gray-900">
+                {session.duration_seconds ? formatDuration(session.duration_seconds) : '—'}
               </span>
               <span className="text-sm font-semibold text-gray-900">
                 {session.duration_seconds ? formatDuration(session.duration_seconds) : '—'}

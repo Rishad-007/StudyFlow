@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useGreeting } from '@/hooks/useGreeting'
 import { useDashboardStore } from '@/stores/dashboardStore'
 import { useSubjectStore } from '@/stores/subjectStore'
+import { useSubjects } from '@/hooks/useSubjects'
 import { DailyProgressRing } from '@/components/dashboard/DailyProgressRing'
 import { StreakBadge } from '@/components/dashboard/StreakBadge'
 import { QuickStartTimer } from '@/components/dashboard/QuickStartTimer'
@@ -14,16 +15,16 @@ import { SkeletonCard } from '@/components/shared/Skeleton'
 import { PWAInstallButton } from '@/components/shared/PWAInstallButton'
 
 export default function DashboardPage() {
+  useSubjects()
   const { user } = useAuth()
   const { greeting } = useGreeting()
   const { todayTarget, todayPlans, recentSessions, streak, loading, fetchDashboardData } =
     useDashboardStore()
   const subjects = useSubjectStore((s) => s.subjects)
-  const fetchSubjects = useSubjectStore((s) => s.fetchSubjects)
+  const chapters = useSubjectStore((s) => s.chapters)
 
   useEffect(() => {
     fetchDashboardData()
-    if (subjects.length === 0) fetchSubjects()
   }, [])
 
   const enrichedPlans = useMemo(
@@ -42,6 +43,11 @@ export default function DashboardPage() {
   const subjectNames = useMemo(
     () => Object.fromEntries(subjects.map((s) => [s.id, s.name])),
     [subjects],
+  )
+
+  const chapterNames = useMemo(
+    () => Object.fromEntries(chapters.map((ch) => [ch.id, ch.name])),
+    [chapters],
   )
 
   const displayName = user?.user_metadata?.full_name ?? user?.email?.split('@')[0] ?? 'there'
@@ -91,7 +97,11 @@ export default function DashboardPage() {
       {/* Plans + Sessions Grid */}
       <div className="grid gap-4 lg:grid-cols-2">
         <TodaysPlans plans={enrichedPlans} />
-        <RecentSessions sessions={recentSessions} subjectNames={subjectNames} />
+        <RecentSessions
+          sessions={recentSessions}
+          subjectNames={subjectNames}
+          chapterNames={chapterNames}
+        />
       </div>
 
       {/* Habits */}

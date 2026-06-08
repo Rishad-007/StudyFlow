@@ -21,7 +21,14 @@ function CustomTooltip({ active, payload }: any) {
 }
 
 export const SubjectPieChart = memo(function SubjectPieChart({ data }: SubjectPieChartProps) {
-  const fallbackColors = useMemo(() => generateUniqueColors(data.length), [data.length])
+  const colors = useMemo(() => {
+    const subjectColors = data.map((d) => d.color)
+    const allSame = subjectColors.length > 1 && subjectColors.every((c) => c === subjectColors[0])
+    if (allSame) {
+      return generateUniqueColors(data.length)
+    }
+    return subjectColors
+  }, [data])
 
   if (data.length === 0) {
     return (
@@ -45,8 +52,8 @@ export const SubjectPieChart = memo(function SubjectPieChart({ data }: SubjectPi
             outerRadius={90}
             paddingAngle={2}
           >
-            {data.map((entry, i) => (
-              <Cell key={i} fill={entry.color || fallbackColors[i]} />
+            {data.map((_, i) => (
+              <Cell key={i} fill={colors[i]} />
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />
