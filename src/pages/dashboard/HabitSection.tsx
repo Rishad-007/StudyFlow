@@ -25,7 +25,7 @@ export function HabitSection() {
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md">
       <div className="mb-4 flex items-center justify-between">
         <div>
           <h3 className="text-base font-semibold text-gray-900">Habits</h3>
@@ -52,7 +52,7 @@ export function HabitSection() {
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
             placeholder="Habit name..."
-            className="block flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            className="block flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm transition-colors outline-none placeholder:text-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
             autoFocus
           />
           <button
@@ -106,7 +106,12 @@ export function HabitSection() {
                 >
                   {isDone && <Check className="h-5 w-5" />}
                 </button>
-                <span className={cn('flex-1 text-sm font-medium', isDone && 'text-gray-400 line-through')}>
+                <span
+                  className={cn(
+                    'flex-1 text-sm font-medium',
+                    isDone && 'text-gray-400 line-through',
+                  )}
+                >
                   {habit.name}
                 </span>
                 <div className="flex items-center gap-1 rounded-full bg-orange-50 px-2 py-0.5 text-xs text-orange-600">

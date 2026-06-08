@@ -33,7 +33,7 @@ export function RecentSessions({ sessions, subjectNames }: RecentSessionsProps) 
 
   if (sessions.length === 0) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md">
         <h3 className="mb-2 text-base font-semibold text-gray-900">Recent Sessions</h3>
         <div className="flex flex-col items-center py-4 text-center">
           <Target className="mb-2 h-8 w-8 text-gray-300" />
@@ -50,29 +50,29 @@ export function RecentSessions({ sessions, subjectNames }: RecentSessionsProps) 
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md">
       <h3 className="mb-3 text-base font-semibold text-gray-900">Recent Sessions</h3>
-      <div className="space-y-1.5">
+      <div className="space-y-1">
         {sessions.map((session) => {
           const Icon = session.session_type === 'pomodoro' ? Coffee : Timer
           return (
             <button
               key={session.id}
               onClick={() => navigate('/analytics')}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-gray-50"
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-gray-50"
             >
               <div
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
                 style={{ backgroundColor: `${subjectColor(session.subject_id)}15` }}
               >
                 <Icon className="h-4 w-4" style={{ color: subjectColor(session.subject_id) }} />
               </div>
               <span className="flex-1 text-left text-sm font-medium text-gray-700">
                 {session.subject_id
-                  ? subjectNames[session.subject_id] ?? 'Unknown'
+                  ? (subjectNames[session.subject_id] ?? 'Unknown')
                   : 'No subject'}
               </span>
-              <span className="text-sm font-medium text-gray-900">
+              <span className="text-sm font-semibold text-gray-900">
                 {session.duration_seconds ? formatDuration(session.duration_seconds) : '—'}
               </span>
               <span className="text-xs text-gray-400">
